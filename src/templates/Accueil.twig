@@ -1,0 +1,67 @@
+{% extends 'base.twig' %}
+
+{% block main %}
+
+    <form action="../routes/Accueil.php" class="flex">
+        <div class="flex-1">
+            <label for="titre">Titre :</label>
+            <select class="select2 w-full" id="titre" data-source="../async/getOptions.php?field=titre"></select>
+        </div>
+        <div class="flex-1">
+            <label for="auteur">Auteur :</label>
+            <select class="select2 w-full" id="auteur" data-source="../async/getOptions.php?field=auteur"></select>
+        </div>
+        <div class="flex-1">
+            <label for="editeur">Editeur :</label>
+            <select class="select2 w-full" id="editeur" data-source="../async/getOptions.php?field=editeur"></select>
+        </div>
+        <div class="flex-1">
+            <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none">
+                Rechercher
+            </button>
+        </div>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Genre</th>
+            <th>Auteur</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for livre in livres %}
+            <tr>
+                <td>{{ livre.titre }}</td>
+                <td>{{ livre.genre }}</td>
+                <td>{{ livre.auteur }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Sélectionnez une option",
+                ajax: {
+                    url: function () {
+                        return $(this).data('source'); // Utilisez l'attribut data-source pour obtenir l'URL
+                    },
+                    dataType: 'json',
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    }
+                }
+            });
+        });
+    </script>
+
+
+{% endblock %}
+
+
