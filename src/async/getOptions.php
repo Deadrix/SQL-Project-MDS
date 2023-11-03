@@ -15,11 +15,11 @@ try {
     // Utilisez une structure conditionnelle pour déterminer la requête SQL
     $sql = '';
     if ($field === 'titre') {
-        $sql = "SELECT DISTINCT titre FROM livre ORDER BY titre";
+        $sql = "SELECT DISTINCT id, titre AS nom FROM livre ORDER BY titre";
     } elseif ($field === 'auteur') {
-        $sql = "SELECT DISTINCT nom FROM auteur ORDER BY nom";
+        $sql = "SELECT DISTINCT id, nom FROM auteur ORDER BY nom";
     } elseif ($field === 'editeur') {
-        $sql = "SELECT DISTINCT nom FROM editeur ORDER BY nom";
+        $sql = "SELECT DISTINCT id, nom FROM editeur ORDER BY nom";
     } else {
         // Gérer d'autres cas si nécessaire
         die("Champ inconnu : " . htmlspecialchars($field));
@@ -27,8 +27,17 @@ try {
 
     $sth = $bdh->prepare($sql);
     $sth->execute();
-    $options = $sth->fetchAll(PDO::FETCH_COLUMN);
+    $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 
+    $options = array();
+    foreach ($results as $option) {
+        $tempArray = array(
+            "id" => $option["id"],
+            "text" => $option["nom"]
+        );
+        $options[] = $tempArray;
+    }
+    header('Content-Type: application/json');
     echo json_encode($options);
 } catch (PDOException $e) {
     die("Erreur de base de données : " . $e->getMessage());
