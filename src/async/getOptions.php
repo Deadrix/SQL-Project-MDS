@@ -10,16 +10,20 @@ try {
     $bdh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Récupérez la valeur du paramètre 'field' passé dans l'URL
-    $field = isset($_GET['field']) ? $_GET['field'] : '';
+    $field = !empty($_GET['field']) ? $_GET['field'] : '';
 
     // Utilisez une structure conditionnelle pour déterminer la requête SQL
     $sql = '';
     if ($field === 'titre') {
-        $sql = "SELECT DISTINCT id, titre AS nom FROM livre ORDER BY titre";
+        $sql = "
+            SELECT DISTINCT titre AS nom 
+            FROM livre 
+            ORDER BY titre
+        ";
     } elseif ($field === 'auteur') {
-        $sql = "SELECT DISTINCT id, nom FROM auteur ORDER BY nom";
+        $sql = "SELECT DISTINCT nom FROM auteur ORDER BY nom";
     } elseif ($field === 'editeur') {
-        $sql = "SELECT DISTINCT id, nom FROM editeur ORDER BY nom";
+        $sql = "SELECT DISTINCT nom FROM editeur ORDER BY nom";
     } else {
         // Gérer d'autres cas si nécessaire
         die("Champ inconnu : " . htmlspecialchars($field));
@@ -27,13 +31,13 @@ try {
 
     $sth = $bdh->prepare($sql);
     $sth->execute();
-    $results = $sth->fetchAll(PDO::FETCH_ASSOC);
+    $results = $sth->fetchAll(PDO::FETCH_COLUMN);
 
     $options = array();
     foreach ($results as $option) {
         $tempArray = array(
-            "id" => $option["id"],
-            "text" => $option["nom"]
+            "id" => $option,
+            "text" => $option
         );
         $options[] = $tempArray;
     }

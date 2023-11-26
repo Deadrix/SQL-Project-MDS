@@ -2,85 +2,95 @@
 
 {% block main %}
 
-    <form action="../routes/Accueil.php" method="post" class="flex gap-2">
+    <form action="../controller/Accueil.php" method="post" class="flex gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
         <div class="flex-1 flex gap-2 items-center">
             <label for="titre">Titre :</label>
             <select class="select2 flex-1" id="titre" name="titre"
-                    data-source="../async/getOptions.php?field=titre"></select>
+                    data-source="../async/getOptions.php?field=titre"
+                    data-dynamic="true"></select>
         </div>
 
         <div class="flex-1 flex gap-2 items-center">
             <label for="auteur">Auteur :</label>
             <select class="select2 flex-1" id="auteur" name="auteur"
-                    data-source="../async/getOptions.php?field=auteur"></select>
+                    data-source="../async/getOptions.php?field=auteur"
+                    data-dynamic="true"></select>
         </div>
 
         <div class="flex-1 flex gap-2 items-center">
             <label for="editeur">Editeur :</label>
             <select class="select2 flex-1" id="editeur" name="editeur"
-                    data-source="../async/getOptions.php?field=editeur"></select>
+                    data-source="../async/getOptions.php?field=editeur"
+                    data-dynamic="true"></select>
         </div>
 
         <div class="flex-1 flex gap-2 items-center">
             <p>Disponible :</p>
             <label for="disponibleoui">Oui</label>
-            <input type="radio" id="disponibleoui" name="disponible">
+            <input type="radio" id="disponibleoui" name="disponible" value="1">
 
             <label for="disponiblenon">Non</label>
-            <input type="radio" id="disponiblenon" name="disponible">
+            <input type="radio" id="disponiblenon" name="disponible" value="0">
 
             <label for="disponiblepeuimporte">Peu importe</label>
-            <input type="radio" id="disponiblepeuimporte" name="disponible" checked>
+            <input type="radio" id="disponiblepeuimporte" name="disponible" value="" checked>
         </div>
 
         <div class="mx-auto">
             <button type="submit"
-                    class="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 w-full">
+                    class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75 w-full">
                 Rechercher
             </button>
         </div>
     </form>
+    <div class="flex-1 flex justify-center items-center">
+        {% if message != '' %}
+            <p class="">{{ message }}</p>
+        {% else %}
+            <table class="w-full">
+                <thead class="">
+                <tr class="">
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Titre</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Auteur</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Éditeur</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Dernier Emprunt</th>
+                    <th class="whitespace-nowrap text-center pt-4 pb-1">Disponible</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for livre in livres %}
+                    <tr>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">{{ livre.titre }}</td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">{{ livre.auteur }}</td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">{{ livre.editeur }}</td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 whitespace-nowrap ">
+                            {% if livre.dernieremprunt != '' %}
+                                {{ livre.dernieremprunt | date("d/m/Y") }}
+                            {% else %}
+                                Livre Neuf
+                            {% endif %}
 
-    <table>
-        <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Genre</th>
-            <th>Auteur</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for livre in livres %}
-            <tr>
-                <td>{{ livre.titre }}</td>
-                <td>{{ livre.genre }}</td>
-                <td>{{ livre.auteur }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        </td>
+                        <td class="whitespace-nowrap">
+                            {% if livre.disponibilite %}
+                                <div class="rounded-full bg-green-300 border border-black">&nbsp</div>
+                            {% else %}
+                                <div class="rounded-full bg-red-400 border border-black">&nbsp</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
 
     <script>
-        // $(document).ready(function() {
-        //     $('.select2').select2({
-        //         placeholder: "Sélectionnez une option",
-        //         ajax: {
-        //             url: function () {
-        //                 return $(this).data('source');
-        //             },
-        //             dataType: 'json',
-        //             processResults: function(data) {
-        //                 return {
-        //                     results: data
-        //                 };
-        //             }
-        //         }
-        //     });
-        // });
         $(document).ready(function () {
             $('.select2').each(function () {
                 let $select = $(this);
                 let sourceUrl = $select.data('source');
+                let placeholder = "Veuillez sélectionner un " + $select.attr("id");
 
                 // Récupérez les options en utilisant une requête AJAX
                 $.ajax({
@@ -90,27 +100,14 @@
                         data.unshift({"id": '', "text": ''});
                         // Utilisez les données récupérées comme source statique pour Select2
                         $select.select2({
-                            placeholder: "Sélectionnez une option",
+                            placeholder: placeholder,
                             data: data // Utilisez le tableau JSON récupéré
                         });
                     }
                 });
             });
         });
-        // $(document).ready(function() {
-        //     $('.select2').select2({
-        //         placeholder: "Sélectionnez une option",
-        //         data: [
-        //             { "id": 1, "text": "Option 1" },
-        //             { "id": 2, "text": "Option 2" },
-        //             { "id": 3, "text": "Option 3" },
-        //             { "id": 4, "text": "Option 4" },
-        //             { "id": 5, "text": "Option 5" }
-        //         ]
-        //     });
-        // });
     </script>
-
 
 {% endblock %}
 
