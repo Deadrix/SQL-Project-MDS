@@ -1,49 +1,53 @@
 {% extends 'base.twig' %}
 
 {% block main %}
+    <div id="rechercheLivre" hidden="hidden">
+        <form id="form" action="../controller/Accueil.php" method="post"
+              class="flex gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
+            <input id="hiddenInput" type="hidden" name="hiddenInput" value="">
+            <div class="flex-1 flex gap-2 items-center">
+                <label for="titre">Titre :</label>
+                <select class="select2 flex-1" id="titre" name="titre"
+                        data-source="../async/getOptions.php?field=titre"
+                        data-dynamic="true"></select>
+            </div>
 
-    <form action="../controller/Accueil.php" method="post" class="flex gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
-        <div class="flex-1 flex gap-2 items-center">
-            <label for="titre">Titre :</label>
-            <select class="select2 flex-1" id="titre" name="titre"
-                    data-source="../async/getOptions.php?field=titre"
-                    data-dynamic="true"></select>
-        </div>
+            <div class="flex-1 flex gap-2 items-center">
+                <label for="auteur">Auteur :</label>
+                <select class="select2 flex-1" id="auteur" name="auteur"
+                        data-source="../async/getOptions.php?field=auteur"
+                        data-dynamic="true"></select>
+            </div>
 
-        <div class="flex-1 flex gap-2 items-center">
-            <label for="auteur">Auteur :</label>
-            <select class="select2 flex-1" id="auteur" name="auteur"
-                    data-source="../async/getOptions.php?field=auteur"
-                    data-dynamic="true"></select>
-        </div>
+            <div class="flex-1 flex gap-2 items-center">
+                <label for="editeur">Editeur :</label>
+                <select class="select2 flex-1" id="editeur" name="editeur"
+                        data-source="../async/getOptions.php?field=editeur"
+                        data-dynamic="true"></select>
+            </div>
 
-        <div class="flex-1 flex gap-2 items-center">
-            <label for="editeur">Editeur :</label>
-            <select class="select2 flex-1" id="editeur" name="editeur"
-                    data-source="../async/getOptions.php?field=editeur"
-                    data-dynamic="true"></select>
-        </div>
+            <div class="flex-1 flex gap-2 items-center">
+                <p>Disponible :</p>
+                <label for="disponibleoui">Oui</label>
+                <input type="radio" id="disponibleoui" name="disponible" value="1">
 
-        <div class="flex-1 flex gap-2 items-center">
-            <p>Disponible :</p>
-            <label for="disponibleoui">Oui</label>
-            <input type="radio" id="disponibleoui" name="disponible" value="1">
+                <label for="disponiblenon">Non</label>
+                <input type="radio" id="disponiblenon" name="disponible" value="0">
 
-            <label for="disponiblenon">Non</label>
-            <input type="radio" id="disponiblenon" name="disponible" value="0">
+                <label for="disponiblepeuimporte">Peu importe</label>
+                <input type="radio" id="disponiblepeuimporte" name="disponible" value="" checked>
+            </div>
 
-            <label for="disponiblepeuimporte">Peu importe</label>
-            <input type="radio" id="disponiblepeuimporte" name="disponible" value="" checked>
-        </div>
+            <div class="mx-auto">
+                <button id="rechercher"
+                        class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75 w-full">
+                    Rechercher
+                </button>
+            </div>
+        </form>
+    </div>
 
-        <div class="mx-auto">
-            <button type="submit"
-                    class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75 w-full">
-                Rechercher
-            </button>
-        </div>
-    </form>
-    <div class="flex-1 flex justify-center items-center">
+    <div class="flex-1 flex flex-col justify-center items-center">
         {% if message != '' %}
             <p class="">{{ message }}</p>
         {% else %}
@@ -83,14 +87,67 @@
                 </tbody>
             </table>
         {% endif %}
+
+        <div class="w-full flex justify-between">
+            <div>
+                <button id="precedent"
+                        class="my-2 py-1 rounded-full font-semibold hover:underline flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    <span>Précédent</span>
+                </button>
+            </div>
+            <div>
+                <button id="suivant"
+                        class="my-2 py-1 rounded-full font-semibold hover:underline flex items-center gap-2">
+                    <span>Suivant</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                        <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <script>
         $(document).ready(function () {
+
+            {% if filtres %}
+            $("#rechercheLivre").show();
+            {% endif %}
+
+            {% if hidePrecedent %}
+            $("#precedent").hide();
+            {% endif %}
+
+            {% if hideSuivant %}
+            $("#suivant").hide();
+            {% endif %}
+
+            // si click sur rechercher, set hiddeninput value = rechercher et submit
+            $("#rechercher").click(function () {
+                $("#hiddenInput").val("rechercher");
+                $("#form").submit();
+            });
+
+            // si click sur precedent, set hiddeninput value = precedent et submit
+            $("#precedent").click(function () {
+                $("#hiddenInput").val("precedent");
+                $("#form").submit();
+            });
+
+            // si click sur suivant, set hiddeninput value = suivant et submit
+            $("#suivant").click(function () {
+                $("#hiddenInput").val("suivant");
+                $("#form").submit();
+            });
+
             $('.select2').each(function () {
                 let $select = $(this);
                 let sourceUrl = $select.data('source');
-                let placeholder = "Veuillez sélectionner un " + $select.attr("id");
+                let placeholder = "Sélectionner un " + $select.attr("id") + "...";
 
                 // Récupérez les options en utilisant une requête AJAX
                 $.ajax({

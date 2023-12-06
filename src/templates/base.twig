@@ -19,7 +19,8 @@
         </a>
         <h1 class="font-bold ">SQL Project</h1>
         <nav class="flex items-center gap-8">
-            <a href="../controller/Accueil.php">Trouver un livre</a>
+            {#            <a id="trouverLivre" href="../controller/Accueil.php">Trouver un livre</a> #}
+            <button id="trouverLivre">Trouver un livre</button>
             <a href="../controller/Abonne.php">Trouver un abonné</a>
         </nav>
     </div>
@@ -40,10 +41,27 @@
                 <img src="../assets/MDSLogo.png" alt="" class="h-10">
             </a>
             <img src="../assets/MySQLLogo.png" alt="" class="h-10">
-            <img src="../assets/TwigLogoBKP.png" alt="" class="h-10">
+            <img src="../assets/TwigLogo.png" alt="" class="h-10">
         </div>
     </section>
 </footer>
+
+<script>
+    $(document).ready(function () {
+        $("#trouverLivre").click(function () {
+            if (window.location.href.indexOf("Accueil") > -1) {
+                let rechercheLivre = $("#rechercheLivre");
+                if (rechercheLivre.is(':visible')) {
+                    rechercheLivre.slideUp("slow");
+                } else {
+                    rechercheLivre.slideDown("slow");
+                }
+            } else {
+                window.location.href = "../controller/Accueil.php";
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -1,4 +1,7 @@
 <?php
+
+require_once '../functions/functions.php';
+
 $user = 'SQLMDS';
 $pass = 'SQLMDS';
 $dbname = 'sqlmds';
