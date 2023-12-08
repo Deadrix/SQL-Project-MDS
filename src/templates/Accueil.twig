@@ -4,26 +4,22 @@
     <div id="rechercheLivre" hidden="hidden">
         <form id="form" action="../controller/Accueil.php" method="post"
               class="flex gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
+
             <input id="hiddenInput" type="hidden" name="hiddenInput" value="">
+
             <div class="flex-1 flex gap-2 items-center">
                 <label for="titre">Titre :</label>
-                <select class="select2 flex-1" id="titre" name="titre"
-                        data-source="../async/getOptions.php?field=titre"
-                        data-dynamic="true"></select>
+                <input type="text" id="titre" name="titre" placeholder="Veuillez saisir un titre...">
             </div>
 
             <div class="flex-1 flex gap-2 items-center">
                 <label for="auteur">Auteur :</label>
-                <select class="select2 flex-1" id="auteur" name="auteur"
-                        data-source="../async/getOptions.php?field=auteur"
-                        data-dynamic="true"></select>
+                <input type="text" id="auteur" name="auteur" placeholder="Veuillez saisir un auteur...">
             </div>
 
             <div class="flex-1 flex gap-2 items-center">
                 <label for="editeur">Editeur :</label>
-                <select class="select2 flex-1" id="editeur" name="editeur"
-                        data-source="../async/getOptions.php?field=editeur"
-                        data-dynamic="true"></select>
+                <input type="text" id="editeur" name="editeur" placeholder="Veuillez saisir un éditeur...">
             </div>
 
             <div class="flex-1 flex gap-2 items-center">
@@ -53,29 +49,31 @@
         {% else %}
             <table class="w-full">
                 <thead class="">
-                <tr class="">
-                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Titre</th>
-                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Auteur</th>
-                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Éditeur</th>
-                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Dernier Emprunt</th>
-                    <th class="whitespace-nowrap text-center pt-4 pb-1">Disponible</th>
+                <tr>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-5/12">Titre</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-3/12">Auteur</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-2/12">Éditeur</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-1/12">Dernier Emprunt</th>
+                    <th class="whitespace-nowrap text-center pt-4 pb-1 w-1/12">Disponible</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for livre in livres %}
                     <tr>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">{{ livre.titre }}</td>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">{{ livre.auteur }}</td>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">{{ livre.editeur }}</td>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 whitespace-nowrap ">
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-5/12"
+                            title="{{ livre.titre }}">{{ livre.titre }}</td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-3/12"
+                            title="{{ livre.auteur }}">{{ livre.auteur }}</td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-2/12"
+                            title="{{ livre.editeur }}">{{ livre.editeur }}</td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-1/12 whitespace-nowrap ">
                             {% if livre.dernieremprunt != '' %}
                                 {{ livre.dernieremprunt | date("d/m/Y") }}
                             {% else %}
                                 Livre Neuf
                             {% endif %}
-
                         </td>
-                        <td class="whitespace-nowrap">
+                        <td class="whitespace-nowrap w-1/12">
                             {% if livre.disponibilite %}
                                 <div class="rounded-full bg-green-300 border border-black">&nbsp</div>
                             {% else %}
@@ -113,17 +111,19 @@
 
     <script>
         $(document).ready(function () {
+            let precedent = $("#precedent")
+            let suivant = $("#suivant")
 
             {% if filtres %}
             $("#rechercheLivre").show();
             {% endif %}
 
             {% if hidePrecedent %}
-            $("#precedent").hide();
+            precedent.hide();
             {% endif %}
 
             {% if hideSuivant %}
-            $("#suivant").hide();
+            suivant.hide();
             {% endif %}
 
             // si click sur rechercher, set hiddeninput value = rechercher et submit
@@ -133,35 +133,15 @@
             });
 
             // si click sur precedent, set hiddeninput value = precedent et submit
-            $("#precedent").click(function () {
+            precedent.click(function () {
                 $("#hiddenInput").val("precedent");
                 $("#form").submit();
             });
 
             // si click sur suivant, set hiddeninput value = suivant et submit
-            $("#suivant").click(function () {
+            suivant.click(function () {
                 $("#hiddenInput").val("suivant");
                 $("#form").submit();
-            });
-
-            $('.select2').each(function () {
-                let $select = $(this);
-                let sourceUrl = $select.data('source');
-                let placeholder = "Sélectionner un " + $select.attr("id") + "...";
-
-                // Récupérez les options en utilisant une requête AJAX
-                $.ajax({
-                    url: sourceUrl,
-                    dataType: 'json',
-                    success: function (data) {
-                        data.unshift({"id": '', "text": ''});
-                        // Utilisez les données récupérées comme source statique pour Select2
-                        $select.select2({
-                            placeholder: placeholder,
-                            data: data // Utilisez le tableau JSON récupéré
-                        });
-                    }
-                });
             });
         });
     </script>
