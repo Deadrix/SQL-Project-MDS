@@ -1,14 +1,162 @@
 {% extends 'base.twig' %}
 
 {% block main %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>404</h1>
-                <p>Page not found</p>
+    <section id="searchAbonne">
+        <form id="formSearchAbonne" action="../controller/Abonne.php" method="post"
+              class="flex gap-2 justify-between items-center border-b border-blue-mds rounded-2xl py-3 px-2">
+
+            <input id="hiddenInput" type="hidden" name="hiddenInput" value="">
+
+            <div class="flex gap-2 items-center">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" class="px-1.5" placeholder="Veuillez saisir un nom...">
+            </div>
+
+            <div class="flex gap-2 items-center">
+                <label for="prenom">Prenom :</label>
+                <input type="text" id="prenom" name="prenom" class="px-1.5" placeholder="Veuillez saisir un prenom...">
+            </div>
+
+            <div class="flex gap-2 items-center">
+                <label for="ville">Ville :</label>
+                <input type="text" id="ville" name="ville" class="px-1.5" placeholder="Veuillez saisir une ville...">
+            </div>
+
+            <div class="flex gap-2 items-center">
+                <p>Abonnement :</p>
+                <label for="actif">Actif</label>
+                <input type="radio" id="actif" name="abonnement" value="1">
+
+                <label for="inactif">Inactif</label>
+                <input type="radio" id="inactif" name="abonnement" value="0">
+
+                <label for="abonnementpeuimporte">Peu importe</label>
+                <input type="radio" id="abonnementpeuimporte" name="abonnement" value="" checked>
+            </div>
+
+            <button id="rechercher"
+                    class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75">
+                Rechercher
+            </button>
+        </form>
+    </section>
+
+    <section class="flex-1 flex flex-col justify-center items-center">
+        {% if message != '' %}
+            <p class="">{{ message }}</p>
+        {% else %}
+            <table class="w-full table-fixed">
+                <thead>
+                <tr>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-3/12">Nom</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-3/12">Prenom</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-5/12">Ville</th>
+                    <th class="whitespace-nowrap text-center pt-4 pb-1 w-1/12">Abonnement</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for abonne in abonnes %}
+                    <tr class="clickableRow" data-href="../controller/AbonneProfile.php?id={{ abonne.id }}">
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                            title="{{ abonne.nom }}"><span class="line-clamp-1">{{ abonne.nom }}</span></td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                            title="{{ abonne.prenom }}"><span class="line-clamp-1">{{ abonne.prenom }}</span></td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                            title="{{ abonne.ville }}"><span class="line-clamp-1">{{ abonne.ville }}</span></td>
+                        <td class="whitespace-nowrap">
+                            {% if abonne.abonnement %}
+                                <div class="rounded-full bg-green-300 border border-black">&nbsp</div>
+                            {% else %}
+                                <div class="rounded-full bg-red-400 border border-black">&nbsp</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <div class="w-full flex justify-between">
+            <div>
+                <button id="precedent"
+                        class="my-2 py-1 rounded-full font-semibold hover:underline flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                    </svg>
+                    <span>Précédent</span>
+                </button>
+            </div>
+            <div>
+                <button id="suivant"
+                        class="my-2 py-1 rounded-full font-semibold hover:underline flex items-center gap-2">
+                    <span>Suivant</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                        <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                    </svg>
+                </button>
             </div>
         </div>
-    </div>
+
+    </section>
+
+    <script>
+        $(document).ready(function () {
+            let form = $("#formSearchAbonne")
+            let hiddenInput = $("#hiddenInput")
+            let rechercher = $("#rechercher")
+            let precedent = $("#precedent")
+            let suivant = $("#suivant")
+            let clickableRow = $(".clickableRow")
+            let nom = $("#nom")
+            let prenom = $("#prenom")
+            let ville = $("#ville")
+            let actif = $("#actif")
+            let inactif = $("#inactif")
+            let abonnementpeuimporte = $("#abonnementpeuimporte")
+
+            {% if hidePrecedent %}
+            precedent.hide();
+            {% endif %}
+
+            {% if hideSuivant %}
+            suivant.hide();
+            {% endif %}
+
+            {% if havingFiltres %}
+            nom.val("{{ filtres.nom }}");
+            prenom.val("{{ filtres.prenom }}");
+            ville.val("{{ filtres.ville }}");
+            {% if filtres.abonnement == 1 %}
+            actif.prop("checked", true);
+            {% elseif filtres.abonnement == 0 %}
+            inactif.prop("checked", true);
+            {% else %}
+            abonnementpeuimporte.prop("checked", true);
+            {% endif %}
+            {% endif %}
+
+            rechercher.click(function () {
+                hiddenInput.val("rechercher");
+                form.submit();
+            });
+
+            precedent.click(function () {
+                hiddenInput.val("precedent");
+                form.submit();
+            });
+
+            suivant.click(function () {
+                hiddenInput.val("suivant");
+                form.submit();
+            });
+
+            clickableRow.click(function() {
+                let href = $(this).data("href");
+                if (href) {
+                    window.location.href = href;
+                }
+            });
+        });
+    </script>
+
 {% endblock %}
-
-

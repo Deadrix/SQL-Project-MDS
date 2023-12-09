@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="fr" class="font-manrope">
+<html lang="fr" class="font-manrope no-scrollbar text-base">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../../dist/output.css" rel="stylesheet">
     <title>SQL Project | {% block title %}{{ title }}{% endblock %}</title>
-    <link href="../../node_modules/select2/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../../node_modules/select2/dist/js/select2.min.js"></script>
 </head>
 
-<body class="flex flex-col min-h-screen bg-white text-slate-900">
+<body class="flex flex-col min-h-screen bg-white text-slate-900 ">
 
 <header class="border-b shadow-top-2xl mb-5">
-    <div class="container mx-auto flex justify-between items-center py-5">
+    <div class="container mx-auto flex items-center justify-between py-5">
+
         <a href="../controller/Accueil.php">
             <img src="../assets/MDSLogo.png" alt="" class="h-12">
         </a>
-        <h1 class="font-bold ">SQL Project</h1>
+
+        <h1 class="font-bold text-center">SQL Project</h1>
+
         <nav class="flex items-center gap-8">
-            {#            <a id="trouverLivre" href="../controller/Accueil.php">Trouver un livre</a> #}
-            <button id="trouverLivre">Trouver un livre</button>
-            <a href="../controller/Abonne.php">Trouver un abonné</a>
+            <button id="searchLivreButton">Chercher un livre</button>
+            <a href="../controller/Abonne.php">Chercher un abonné</a>
         </nav>
+
     </div>
 </header>
 
@@ -48,13 +49,14 @@
 
 <script>
     $(document).ready(function () {
-        $("#trouverLivre").click(function () {
+        let searchLivreButton = $("#searchLivreButton");
+        let searchLivre = $("#searchLivre");
+        searchLivreButton.click(function () {
             if (window.location.href.indexOf("Accueil") > -1) {
-                let rechercheLivre = $("#rechercheLivre");
-                if (rechercheLivre.is(':visible')) {
-                    rechercheLivre.slideUp("slow");
+                if (searchLivre.is(':visible')) {
+                    searchLivre.slideUp("slow");
                 } else {
-                    rechercheLivre.slideDown("slow");
+                    searchLivre.slideDown("slow");
                 }
             } else {
                 window.location.href = "../controller/Accueil.php";

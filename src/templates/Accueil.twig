@@ -1,28 +1,29 @@
 {% extends 'base.twig' %}
 
 {% block main %}
-    <div id="rechercheLivre" hidden="hidden">
-        <form id="form" action="../controller/Accueil.php" method="post"
-              class="flex gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
+    <section id="searchLivre" hidden="hidden">
+        <form id="formSearchLivre" action="../controller/Accueil.php" method="post" autocomplete="off"
+              class="flex justify-between gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
 
             <input id="hiddenInput" type="hidden" name="hiddenInput" value="">
 
-            <div class="flex-1 flex gap-2 items-center">
+            <div class="flex gap-2 items-center">
                 <label for="titre">Titre :</label>
-                <input type="text" id="titre" name="titre" placeholder="Veuillez saisir un titre...">
+                <input type="text" id="titre" name="titre" class="px-1.5" placeholder="Veuillez saisir un titre...">
             </div>
 
-            <div class="flex-1 flex gap-2 items-center">
+            <div class="flex gap-2 items-center">
                 <label for="auteur">Auteur :</label>
-                <input type="text" id="auteur" name="auteur" placeholder="Veuillez saisir un auteur...">
+                <input type="text" id="auteur" name="auteur" class="px-1.5" placeholder="Veuillez saisir un auteur...">
             </div>
 
-            <div class="flex-1 flex gap-2 items-center">
+            <div class="flex gap-2 items-center">
                 <label for="editeur">Editeur :</label>
-                <input type="text" id="editeur" name="editeur" placeholder="Veuillez saisir un éditeur...">
+                <input type="text" id="editeur" name="editeur" class="px-1.5"
+                       placeholder="Veuillez saisir un éditeur...">
             </div>
 
-            <div class="flex-1 flex gap-2 items-center">
+            <div class="flex gap-2 items-center">
                 <p>Disponible :</p>
                 <label for="disponibleoui">Oui</label>
                 <input type="radio" id="disponibleoui" name="disponible" value="1">
@@ -33,22 +34,19 @@
                 <label for="disponiblepeuimporte">Peu importe</label>
                 <input type="radio" id="disponiblepeuimporte" name="disponible" value="" checked>
             </div>
-
-            <div class="mx-auto">
-                <button id="rechercher"
-                        class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75 w-full">
-                    Rechercher
-                </button>
-            </div>
+            <button id="rechercher"
+                    class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75">
+                Rechercher
+            </button>
         </form>
-    </div>
+    </section>
 
-    <div class="flex-1 flex flex-col justify-center items-center">
+    <section class="flex-1 flex flex-col justify-center items-center">
         {% if message != '' %}
-            <p class="">{{ message }}</p>
+            <h1>{{ message }}</h1>
         {% else %}
-            <table class="w-full">
-                <thead class="">
+            <table class="w-full table-fixed">
+                <thead>
                 <tr>
                     <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-5/12">Titre</th>
                     <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-3/12">Auteur</th>
@@ -60,20 +58,20 @@
                 <tbody>
                 {% for livre in livres %}
                     <tr>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-5/12"
-                            title="{{ livre.titre }}">{{ livre.titre }}</td>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-3/12"
-                            title="{{ livre.auteur }}">{{ livre.auteur }}</td>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-2/12"
-                            title="{{ livre.editeur }}">{{ livre.editeur }}</td>
-                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 w-1/12 whitespace-nowrap ">
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                            title="{{ livre.titre }}"><span class="line-clamp-1">{{ livre.titre }}</span></td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                            title="{{ livre.auteur }}"><span class="line-clamp-1">{{ livre.auteur }}</span></td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                            title="{{ livre.editeur }}"><span class="line-clamp-1">{{ livre.editeur }}</span></td>
+                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">
                             {% if livre.dernieremprunt != '' %}
                                 {{ livre.dernieremprunt | date("d/m/Y") }}
                             {% else %}
                                 Livre Neuf
                             {% endif %}
                         </td>
-                        <td class="whitespace-nowrap w-1/12">
+                        <td class="whitespace-nowrap">
                             {% if livre.disponibilite %}
                                 <div class="rounded-full bg-green-300 border border-black">&nbsp</div>
                             {% else %}
@@ -107,15 +105,35 @@
             </div>
         </div>
 
-    </div>
+    </section>
 
     <script>
         $(document).ready(function () {
+            let searchLivre = $("#searchLivre")
+            let form = $("#formSearchLivre")
+            let hiddenInput = $("#hiddenInput")
+            let rechercher = $("#rechercher")
             let precedent = $("#precedent")
             let suivant = $("#suivant")
+            let titre = $("#titre")
+            let auteur = $("#auteur")
+            let editeur = $("#editeur")
+            let disponibleoui = $("#disponibleoui")
+            let disponiblenon = $("#disponiblenon")
+            let disponiblepeuimporte = $("#disponiblepeuimporte")
 
-            {% if filtres %}
-            $("#rechercheLivre").show();
+            {% if havingFiltres %}
+            searchLivre.show();
+            titre.val("{{ filtres.titre }}");
+            auteur.val("{{ filtres.auteur }}");
+            editeur.val("{{ filtres.editeur }}");
+            {% if filtres.disponible == 1 %}
+            disponibleoui.prop("checked", true);
+            {% elseif filtres.disponible == 0 %}
+            disponiblenon.prop("checked", true);
+            {% else %}
+            disponiblepeuimporte.prop("checked", true);
+            {% endif %}
             {% endif %}
 
             {% if hidePrecedent %}
@@ -127,21 +145,21 @@
             {% endif %}
 
             // si click sur rechercher, set hiddeninput value = rechercher et submit
-            $("#rechercher").click(function () {
-                $("#hiddenInput").val("rechercher");
-                $("#form").submit();
+            rechercher.click(function () {
+                hiddenInput.val("rechercher");
+                form.submit();
             });
 
             // si click sur precedent, set hiddeninput value = precedent et submit
             precedent.click(function () {
-                $("#hiddenInput").val("precedent");
-                $("#form").submit();
+                hiddenInput.val("precedent");
+                form.submit();
             });
 
             // si click sur suivant, set hiddeninput value = suivant et submit
             suivant.click(function () {
-                $("#hiddenInput").val("suivant");
-                $("#form").submit();
+                hiddenInput.val("suivant");
+                form.submit();
             });
         });
     </script>

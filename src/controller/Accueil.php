@@ -10,7 +10,7 @@ $loader = new FilesystemLoader('../templates');
 $twig = new Environment($loader);
 
 session_start();
-$bdh = connectToDatabase();
+$pdo = connectToDatabase();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $editeur = '';
     $disponible = '';
     $page = 0;
+
     if (!isset($_SESSION["page"])) {
         $_SESSION["page"] = 0;
     }
@@ -27,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hideSuivant = false;
 
     if ($_POST["hiddenInput"] === "rechercher") {
-        $titre = $_POST["titre"];
-            $auteur = $_POST["auteur"];
-            $editeur = $_POST["editeur"];
-            $disponible = $_POST["disponible"];
+        $titre = htmlspecialchars($_POST["titre"]);
+            $auteur = htmlspecialchars($_POST["auteur"]);
+            $editeur = htmlspecialchars($_POST["editeur"]);
+            $disponible = htmlspecialchars($_POST["disponible"]);
             $_SESSION["filtres"] = [
                 "titre" => $titre,
                 "auteur" => $auteur,
@@ -74,14 +75,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             FROM livre li
             JOIN auteur au ON au.id = li.id_auteur
             JOIN editeur ed ON ed.id = li.id_editeur
-            WHERE (NULLIF(:titre, '') IS NULL OR li.titre LIKE :titre)
-            AND (NULLIF(:auteur, '') IS NULL OR au.nom LIKE :auteur)
-            AND (NULLIF(:editeur, '') IS NULL OR ed.nom LIKE :editeur)
-            AND (NULLIF(:disponibilite, '') IS NULL OR li.dispo = :disponibilite)
+            WHERE (NULLIF(:titre, '') IS NULL OR LOWER(li.titre) COLLATE utf8mb4_unicode_ci LIKE LOWER(:titre) COLLATE utf8mb4_unicode_ci)
+              AND (NULLIF(:auteur, '') IS NULL OR LOWER(au.nom) COLLATE utf8mb4_unicode_ci LIKE LOWER(:auteur) COLLATE utf8mb4_unicode_ci)
+              AND (NULLIF(:editeur, '') IS NULL OR LOWER(ed.nom) COLLATE utf8mb4_unicode_ci LIKE LOWER(:editeur) COLLATE utf8mb4_unicode_ci)
+              AND (NULLIF(:disponibilite, '') IS NULL OR li.dispo = :disponibilite)
             ORDER BY titre ASC
             LIMIT 20 OFFSET :offset;
         ";
-    $sth = $bdh->prepare($sql);
+    $sth = $pdo->prepare($sql);
     $sth->bindValue(':titre', "%".$titre."%");
     $sth->bindValue(':auteur', "%".$auteur."%");
     $sth->bindValue(':editeur', "%".$editeur."%");
@@ -89,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sth->bindValue(':offset', $offset, PDO::PARAM_INT);
     $sth->execute();
     $livres = $sth->fetchAll(PDO::FETCH_ASSOC);
-    $filtres = isset($_SESSION["filtres"]) ? true : false;
+    $pdo = null;
+    $havingFiltres = isset($_SESSION["filtres"]);
 
     if (count($livres) < 20) {
         $hideSuivant = true;
@@ -98,17 +100,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo $twig->render('Accueil.twig', [
             'title' => 'Accueil',
             'livres' => $livres,
-            'filtres' => $filtres,
+            'havingFiltres' => $havingFiltres,
             'hidePrecedent' => $hidePrecedent,
-            'hideSuivant' => $hideSuivant
+            'hideSuivant' => $hideSuivant,
+            'filtres' => $havingFiltres ? $_SESSION["filtres"] : null
         ]);
     } else {
         echo $twig->render('Accueil.twig', [
             'title' => 'Accueil',
-            'message' => 'Aucun résultat trouvé.',
-            'filtres' => true,
-            $hidePrecedent => true,
-            $hideSuivant => true
+            'message' => 'Aucun livre trouvé.',
+            'havingFiltres' => true,
+            'hidePrecedent' => true,
+            'hideSuivant' => true,
+            'filtres' => $havingFiltres ? $_SESSION["filtres"] : null
         ]);
     }
 } else {
@@ -127,9 +131,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ORDER BY titre ASC
             LIMIT 20;
         ";
-    $sth = $bdh->prepare($sql);
+    $sth = $pdo->prepare($sql);
     $sth->execute();
     $livres = $sth->fetchAll(PDO::FETCH_ASSOC);
+    $pdo = null;
     echo $twig->render('Accueil.twig', [
         'title' => 'Accueil',
         'livres' => $livres,

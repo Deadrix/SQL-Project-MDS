@@ -11,6 +11,9 @@ module.exports = {
                 'blue-mds': '#25B8C5'
             },
         },
+        fontSize: {
+            'base': '16px',
+        }
     },
     plugins: [],
 }

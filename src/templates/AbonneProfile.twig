@@ -1,0 +1,254 @@
+{% extends 'base.twig' %}
+
+    {% block main %}
+
+        {% if message != '' %}
+            <h1>{{ message }}</h1>
+        {% else %}
+            <section id="AbonneProfile">
+                <form id="formAbonneProfile" action="../controller/Abonne.php" method="post"
+                      class="grid grid-cols-12 gap-7 items-end border-b border-blue-mds rounded-2xl pt-3 pb-5 px-2 mt-10">
+
+                    <input id="hiddenInput" type="hidden" name="hiddenInput" value="{{ abonne.id }}">
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="nom">Nom :</label>
+                        <input type="text" id="nom" name="nom" class="p-2 border border-blue-mds rounded-md" disabled
+                               value="{{ abonne.nom }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="prenom">Prenom :</label>
+                        <input type="text" id="prenom" name="prenom" class="p-2 border border-blue-mds rounded-md"
+                               disabled value="{{ abonne.prenom }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="naissance">Date de naissance :</label>
+                        <input type="date" id="naissance" name="naissance" class="p-2 border border-blue-mds rounded-md"
+                               disabled
+                               value="{{ abonne.date_naissance }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-6">
+                        <label for="adresse">Adresse :</label>
+                        <input type="text" id="adresse" name="adresse" class="p-2 border border-blue-mds rounded-md"
+                               disabled value="{{ abonne.adresse }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-2">
+                        <label for="codePostal">Code postal :</label>
+                        <input type="text" id="codePostal" name="codePostal"
+                               class="p-2 border border-blue-mds rounded-md" disabled
+                               value="{{ abonne.code_postal }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="ville">Ville :</label>
+                        <input type="text" id="ville" name="ville" class="p-2 border border-blue-mds rounded-md"
+                               disabled value="{{ abonne.ville }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="debutAbonnement">Date inscription :</label>
+                        <input type="date" id="debutAbonnement" name="debutAbonnement"
+                               class="p-2 border border-blue-mds rounded-md" disabled
+                               value="{{ abonne.date_inscription }}">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="finAbonnement">Date fin abonnement :</label>
+                        <input type="date" id="finAbonnement" name="finAbonnement"
+                               class="p-2 border border-blue-mds rounded-md" disabled
+                               value="{{ abonne.date_fin_abo }}">
+                    </div>
+
+                    <div class="flex gap-2 items-start col-span-4">
+                        <button id="modifierAbonne"
+                                class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-white hover:bg-blue-mds hover:bg-opacity-75">
+                            Modifier
+                        </button>
+                        <button id="annulerModifierAbonne" hidden="hidden"
+                                class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-white hover:bg-blue-mds hover:bg-opacity-75">
+                            Annuler
+                        </button>
+                        <button id="updateAbonne" hidden="hidden"
+                                class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-black hover:bg-red-500 hover:bg-opacity-90">
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </section>
+        {% endif %}
+
+        <div class="fixed z-10 inset-0 m-12" id="successModal" hidden="hidden">
+            <div class="flex items-center justify-center min-h-screen">
+                <div class="bg-white w-full max-w-md p-6 shadow-md border border-green-500 rounded-2xl">
+                    <div class="text-center">
+                        <div class="flex justify-between">
+                            <h3 class="text-lg font-semibold mt-2">Mise à jour réussie</h3>
+                            <button id="closeSuccessModal"
+                                    class="text-green-500 hover:text-green-700 focus:outline-none">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <br>
+                        <p>La fiche abonnée a bien été mise à jour</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed z-10 inset-0 m-12" id="errorModal" hidden="hidden">
+            <div class="flex items-center justify-center min-h-screen">
+                <div class="bg-white w-full max-w-md p-6 shadow-md border border-red-500 border-opacity-90 rounded-2xl">
+                    <div class="text-center">
+                        <div class="flex justify-between">
+                            <h3 class="text-lg font-semibold mt-2">Échec de la mise à jour.</h3>
+                            <button id="closeErrorModal"
+                                    class="text-red-500 text-opacity-90 hover:text-opacity-100 focus:outline-none">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <br>
+                        <p>Une erreur est survenue lors de la mise à jour de la fiche abonnée. Veuillez ressayer plus tard</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+
+            let modifierAbonne = $('#modifierAbonne');
+            let annulerModifierAbonne = $('#annulerModifierAbonne');
+            let updateAbonne = $('#updateAbonne');
+            let formAbonneProfile = $('#formAbonneProfile');
+            let hiddenInput = $('#hiddenInput');
+            let nom = $('#nom');
+            let prenom = $('#prenom');
+            let naissance = $('#naissance');
+            let adresse = $('#adresse');
+            let codePostal = $('#codePostal');
+            let ville = $('#ville');
+            let debutAbonnement = $('#debutAbonnement');
+            let finAbonnement = $('#finAbonnement');
+            let nomValue = nom.val();
+            let prenomValue = prenom.val();
+            let naissanceValue = naissance.val();
+            let adresseValue = adresse.val();
+            let codePostalValue = codePostal.val();
+            let villeValue = ville.val();
+            let debutAbonnementValue = debutAbonnement.val();
+            let finAbonnementValue = finAbonnement.val();
+            let successModal = $('#successModal');
+            let errorModal = $('#errorModal');
+            let closeSuccessModal = $('#closeSuccessModal');
+            let closeErrorModal = $('#closeErrorModal');
+
+            modifierAbonne.click(function () {
+                event.preventDefault();
+                modifierAbonne.hide();
+                annulerModifierAbonne.show();
+                updateAbonne.show();
+                nom.prop('disabled', false);
+                prenom.prop('disabled', false);
+                naissance.prop('disabled', false);
+                adresse.prop('disabled', false);
+                codePostal.prop('disabled', false);
+                ville.prop('disabled', false);
+                debutAbonnement.prop('disabled', false);
+                finAbonnement.prop('disabled', false);
+            });
+
+            annulerModifierAbonne.click(function () {
+                event.preventDefault();
+                modifierAbonne.show();
+                annulerModifierAbonne.hide();
+                updateAbonne.hide();
+                nom.prop('disabled', true);
+                prenom.prop('disabled', true);
+                naissance.prop('disabled', true);
+                adresse.prop('disabled', true);
+                codePostal.prop('disabled', true);
+                ville.prop('disabled', true);
+                debutAbonnement.prop('disabled', true);
+                finAbonnement.prop('disabled', true);
+                nom.val(nomValue);
+                prenom.val(prenomValue);
+                naissance.val(naissanceValue);
+                adresse.val(adresseValue);
+                codePostal.val(codePostalValue);
+                ville.val(villeValue);
+                debutAbonnement.val(debutAbonnementValue);
+                finAbonnement.val(finAbonnementValue);
+            });
+
+            updateAbonne.click(function () {
+                event.preventDefault();
+                modifierAbonne.show();
+                annulerModifierAbonne.hide();
+                updateAbonne.hide();
+                nom.prop('disabled', true);
+                prenom.prop('disabled', true);
+                naissance.prop('disabled', true);
+                adresse.prop('disabled', true);
+                codePostal.prop('disabled', true);
+                ville.prop('disabled', true);
+                debutAbonnement.prop('disabled', true);
+                finAbonnement.prop('disabled', true);
+                nomValue = nom.val();
+                prenomValue = prenom.val();
+                naissanceValue = naissance.val();
+                adresseValue = adresse.val();
+                codePostalValue = codePostal.val();
+                villeValue = ville.val();
+                debutAbonnementValue = debutAbonnement.val();
+                finAbonnementValue = finAbonnement.val();
+                $.ajax({
+                    url: '../controller/AbonneProfile.php',
+                    type: 'POST',
+                    data: {
+                        id: hiddenInput.val(),
+                        nom: nom.val(),
+                        prenom: prenom.val(),
+                        naissance: naissance.val(),
+                        adresse: adresse.val(),
+                        codePostal: codePostal.val(),
+                        ville: ville.val(),
+                        debutAbonnement: debutAbonnement.val(),
+                        finAbonnement: finAbonnement.val(),
+                    },
+                    success: function (response) {
+                        if (response === 'true') {
+                            successModal.prop('hidden', false);
+                        } else {
+                            errorModal.prop('hidden', false);
+                        }
+                    }
+                });
+            });
+
+            closeSuccessModal.click(function () {
+                event.preventDefault();
+                successModal.prop('hidden', true);
+            });
+
+            closeErrorModal.click(function () {
+                event.preventDefault();
+                errorModal.prop('hidden', true);
+            });
+
+            $(window).click(function() {
+                successModal.prop('hidden', true);
+                errorModal.prop('hidden', true);
+            });
+
+        </script>
+
+    {% endblock %}

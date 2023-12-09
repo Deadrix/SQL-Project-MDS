@@ -7,9 +7,9 @@ function connectToDatabase() : PDO {
     $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
 
     try {
-        $bdh = new PDO($dsn, $user, $pass);
-        $bdh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $bdh; // Retourne l'objet PDO pour la connexion
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
     } catch (PDOException $e) {
         die("Erreur de base de données : " . $e->getMessage());
     }
