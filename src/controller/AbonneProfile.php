@@ -58,30 +58,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE em.id_abonne = :id
             ORDER BY em.date_emprunt DESC";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id' => $_GET['id']]);
+    $stmt->bindValue(':id', $_GET['id']);
+    $stmt->execute();
     $emprunts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    $sqltest = "SELECT li.categorie
+        FROM livre li
+        JOIN emprunt em ON em.id_livre = li.id
+        WHERE id_abonne = :id
+            AND li.categorie IS NOT NULL  -- Exclure les catégories null de la sous-requête
+        GROUP BY li.categorie
+        ORDER BY COUNT(*) DESC
+        LIMIT 1";
+    $stmt = $pdo->prepare($sqltest);
+    $stmt->bindValue(':id', $_GET['id']);
+    $stmt->execute();
+    $test = $stmt->fetch(PDO::FETCH_ASSOC);
+    var_dump($test);
+
     if ($emprunts) {
-        $sqlRecommandation = "SELECT id_livre, COUNT(*)
-                                    FROM emprunt em
-                                    JOIN livre li ON em.id_livre = li.id
-                                    WHERE id_abonne = :id
-                                        AND li.categorie = (
-                                            SELECT categorie
-                                            FROM emprunt em_sub
-                                                JOIN livre li_sub ON em_sub.id_livre = li_sub.id
-                                            WHERE id_abonne = :id
-                                            GROUP BY li_sub.categorie
-                                            ORDER BY COUNT(*) DESC
-                                            LIMIT 1
-                                        )
-                                        AND em.date_emprunt >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
-                                        AND li.dispo = 1
-                                    GROUP BY id_livre
-                                    ORDER BY COUNT(*) DESC
-                                    LIMIT 5";
+        $sqlRecommandation = "SELECT li.titre, li.categorie
+FROM emprunt em
+JOIN livre li ON em.id_livre = li.id
+WHERE id_abonne = :id
+    AND li.categorie IS NOT NULL  -- Exclure les catégories null des résultats 
+    AND li.categorie = :topCategorie
+    AND em.date_emprunt >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
+    AND li.dispo = 1
+GROUP BY li.titre
+ORDER BY COUNT(*) DESC
+LIMIT 5;";
         $stmt = $pdo->prepare($sqlRecommandation);
-        $stmt->execute(['id' => $_GET['id']]);
+        $stmt->bindValue(':id', $_GET['id']);
+        $stmt->bindValue(':topCategorie', $test['categorie']);
+        $stmt->execute();
         $recommandations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
         $emprunts["message"] = "L'utilisateur n'a jamais emprunté de livre.";

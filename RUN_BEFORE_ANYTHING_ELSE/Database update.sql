@@ -10,6 +10,10 @@ ALTER TABLE livre CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 UPDATE IGNORE emprunt
 SET date_retour = DATE_ADD(date_retour, INTERVAL 2 MONTH),
     date_emprunt = DATE_ADD(date_emprunt, INTERVAL 2 MONTH);
+
+UPDATE IGNORE emprunt
+SET date_retour = DATE_SUB(date_retour, INTERVAL 2 MONTH),
+    date_emprunt = DATE_SUB(date_emprunt, INTERVAL 2 MONTH);
     
 -- Add dispo column on livre table cause it's smarter like this
 ALTER TABLE livre ADD COLUMN dispo tinyint;
