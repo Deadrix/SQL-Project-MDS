@@ -7,31 +7,33 @@
 
             <input id="hiddenInput" type="hidden" name="hiddenInput" value="">
 
-            <div class="flex gap-2 items-center">
-                <label for="nom">Nom :</label>
-                <input type="text" id="nom" name="nom" class="px-1.5" placeholder="Veuillez saisir un nom...">
+            <div class="flex flex-col gap-2">
+                <label for="nom" class="px-1.5">Nom :</label>
+                <input type="text" id="nom" name="nom" class="px-1.5" placeholder="Saisir un nom...">
             </div>
 
-            <div class="flex gap-2 items-center">
-                <label for="prenom">Prenom :</label>
-                <input type="text" id="prenom" name="prenom" class="px-1.5" placeholder="Veuillez saisir un prenom...">
+            <div class="flex flex-col gap-2">
+                <label for="prenom" class="px-1.5">Prenom :</label>
+                <input type="text" id="prenom" name="prenom" class="px-1.5" placeholder="Saisir un prenom...">
             </div>
 
-            <div class="flex gap-2 items-center">
-                <label for="ville">Ville :</label>
-                <input type="text" id="ville" name="ville" class="px-1.5" placeholder="Veuillez saisir une ville...">
+            <div class="flex flex-col gap-2">
+                <label for="ville" class="px-1.5">Ville :</label>
+                <input type="text" id="ville" name="ville" class="px-1.5" placeholder="Saisir une ville...">
             </div>
 
-            <div class="flex gap-2 items-center">
+            <div class="flex flex-col gap-2">
                 <p>Abonnement :</p>
-                <label for="actif">Actif</label>
-                <input type="radio" id="actif" name="abonnement" value="1">
+                <div class="flex gap-2">
+                    <label for="actif">Actif</label>
+                    <input type="radio" id="actif" name="abonnement" value="1">
 
-                <label for="inactif">Inactif</label>
-                <input type="radio" id="inactif" name="abonnement" value="0">
+                    <label for="inactif">Inactif</label>
+                    <input type="radio" id="inactif" name="abonnement" value="0">
 
-                <label for="abonnementpeuimporte">Peu importe</label>
-                <input type="radio" id="abonnementpeuimporte" name="abonnement" value="" checked>
+                    <label for="abonnementpeuimporte">Peu importe</label>
+                    <input type="radio" id="abonnementpeuimporte" name="abonnement" value="" checked>
+                </div>
             </div>
 
             <button id="rechercher"
@@ -42,8 +44,8 @@
     </section>
 
     <section class="flex-1 flex flex-col justify-center items-center">
-        {% if message != '' %}
-            <p class="">{{ message }}</p>
+        {% if message is defined %}
+            <p>{{ message }}</p>
         {% else %}
             <table class="w-full table-fixed">
                 <thead>

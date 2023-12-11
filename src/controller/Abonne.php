@@ -97,10 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pdo = null;
     $havingFiltres = isset($_SESSION["filtres"]);
 
-    if (count($abonnes) < 20) {
-        $hideSuivant = true;
-    }
-    if (count($abonnes) > 0) {
+    if ($abonnes) {
+        if (count($abonnes) < 20) {
+            $hideSuivant = true;
+        }
         echo $twig->render('Abonne.twig', [
             'title' => 'Abonnés',
             'abonnes' => $abonnes,
@@ -133,11 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $abonnes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $pdo = null;
-    echo $twig->render('Abonne.twig', [
-        'title' => 'Abonnés',
-        'abonnes' => $abonnes,
-        'hidePrecedent' => true,
-    ]);
+    if ($abonnes) {
+        echo $twig->render('Abonne.twig', [
+            'title' => 'Abonnés',
+            'abonnes' => $abonnes,
+            'hidePrecedent' => true,
+        ]);
+    } else {
+        echo $twig->render('Abonne.twig', [
+            'title' => 'Abonnés',
+            'message' => 'Aucun abonné trouvé.',
+            'hidePrecedent' => true,
+        ]);
+    }
 }
 
 

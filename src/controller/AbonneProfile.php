@@ -14,7 +14,7 @@ $pdo = connectToDatabase();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $id = htmlspecialchars($_POST["id"]);
-    $nom = htmlspecialchars(strtoupper($_POST["nom"]));
+    $nom = htmlspecialchars(ucwords(strtolower($_POST["nom"])));
     $prenom = htmlspecialchars(ucwords(strtolower($_POST["prenom"])));
     $date_naissance = htmlspecialchars($_POST["naissance"]);
     $adresse = htmlspecialchars(ucwords(strtolower($_POST["adresse"])));
@@ -51,10 +51,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $_GET['id']]);
     $abonne = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (count($abonne) > 0) {
+
+    $sql = "SELECT li.titre, em.date_emprunt AS date
+            FROM livre li
+                JOIN emprunt em ON em.id_livre = li.id
+            WHERE em.id_abonne = :id
+            ORDER BY em.date_emprunt DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $_GET['id']]);
+    $emprunts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($emprunts) {
+        $sqlRecommandation = "SELECT id_livre, COUNT(*)
+                                    FROM emprunt em
+                                    JOIN livre li ON em.id_livre = li.id
+                                    WHERE id_abonne = :id
+                                        AND li.categorie = (
+                                            SELECT categorie
+                                            FROM emprunt em_sub
+                                                JOIN livre li_sub ON em_sub.id_livre = li_sub.id
+                                            WHERE id_abonne = :id
+                                            GROUP BY li_sub.categorie
+                                            ORDER BY COUNT(*) DESC
+                                            LIMIT 1
+                                        )
+                                        AND em.date_emprunt >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
+                                        AND li.dispo = 1
+                                    GROUP BY id_livre
+                                    ORDER BY COUNT(*) DESC
+                                    LIMIT 5";
+        $stmt = $pdo->prepare($sqlRecommandation);
+        $stmt->execute(['id' => $_GET['id']]);
+        $recommandations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $emprunts["message"] = "L'utilisateur n'a jamais emprunté de livre.";
+        $recommandations["message"] = "Impossible de créer des recommandations personnalisée.";
+    }
+
+    if ($abonne) {
         echo $twig->render('AbonneProfile.twig', [
             'title' => 'Fiche Abonné',
             'abonne' => $abonne,
+            'emprunts' => $emprunts,
+            'recommandations' => $recommandations
         ]);
     } else {
         echo $twig->render('AbonneProfile.twig', [

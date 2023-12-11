@@ -79,49 +79,104 @@
                     </div>
                 </form>
             </section>
+
+            <section class="flex">
+                {% if emprunts.message is defined %}
+                    <h1>{{ emprunts.message }}</h1>
+                {% else %}
+                    <section id="AbonneEmprunts" class="w-1/2">
+                        <h2 class="w-full text-center mb-2">Historique</h2>
+                        <table class=" table-fixed w-full">
+                            <thead>
+                            <tr>
+                                <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-4/5">Titre</th>
+                                <th class="whitespace-nowrap text-center pe-4 pt-4 pb-1 w-1/5">Emprunt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for emprunt in emprunts %}
+                                <tr>
+                                    <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">
+                                        <span class="line-clamp-1">{{ emprunt.titre }}</span>
+                                    </td>
+                                    <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 text-center">
+                                        {{ emprunt.date |date("d/m/Y") }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </section>
+                {% endif %}
+
+                {% if recommandations.message is defined %}
+                    <h1>{{ recommandations.message }}</h1>
+                {% else %}
+                    <section id="AbonneRecommandation" class="w-1/2">
+                        <table class=" table-fixed w-full">
+                            <thead>
+                            <tr>
+                                <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Titre</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for recommandation in recommandations %}
+                                <tr>
+                                    <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                                        title="{{ recommandation.titre }}">
+                                        <span class="line-clamp-1">{{ recommandation.titre }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </section>
+                {% endif %}
+            </section>
+
+            <div class="fixed z-10 inset-0 m-12" id="successModal" hidden="hidden">
+                <div class="flex items-center justify-center min-h-screen">
+                    <div class="bg-white w-full max-w-md p-6 shadow-md border border-green-500 rounded-2xl">
+                        <div class="text-center">
+                            <div class="flex justify-between">
+                                <h3 class="text-lg font-semibold mt-2">Mise à jour réussie</h3>
+                                <button id="closeSuccessModal"
+                                        class="text-green-500 hover:text-green-700 focus:outline-none">
+                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <br>
+                            <p>La fiche abonnée a bien été mise à jour</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fixed z-10 inset-0 m-12" id="errorModal" hidden="hidden">
+                <div class="flex items-center justify-center min-h-screen">
+                    <div class="bg-white w-full max-w-md p-6 shadow-md border border-red-500 border-opacity-90 rounded-2xl">
+                        <div class="text-center">
+                            <div class="flex justify-between">
+                                <h3 class="text-lg font-semibold mt-2">Échec de la mise à jour.</h3>
+                                <button id="closeErrorModal"
+                                        class="text-red-500 text-opacity-90 hover:text-opacity-100 focus:outline-none">
+                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <br>
+                            <p>Une erreur est survenue lors de la mise à jour de la fiche abonnée. Veuillez ressayer
+                                plus tard</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% endif %}
-
-        <div class="fixed z-10 inset-0 m-12" id="successModal" hidden="hidden">
-            <div class="flex items-center justify-center min-h-screen">
-                <div class="bg-white w-full max-w-md p-6 shadow-md border border-green-500 rounded-2xl">
-                    <div class="text-center">
-                        <div class="flex justify-between">
-                            <h3 class="text-lg font-semibold mt-2">Mise à jour réussie</h3>
-                            <button id="closeSuccessModal"
-                                    class="text-green-500 hover:text-green-700 focus:outline-none">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <br>
-                        <p>La fiche abonnée a bien été mise à jour</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="fixed z-10 inset-0 m-12" id="errorModal" hidden="hidden">
-            <div class="flex items-center justify-center min-h-screen">
-                <div class="bg-white w-full max-w-md p-6 shadow-md border border-red-500 border-opacity-90 rounded-2xl">
-                    <div class="text-center">
-                        <div class="flex justify-between">
-                            <h3 class="text-lg font-semibold mt-2">Échec de la mise à jour.</h3>
-                            <button id="closeErrorModal"
-                                    class="text-red-500 text-opacity-90 hover:text-opacity-100 focus:outline-none">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <br>
-                        <p>Une erreur est survenue lors de la mise à jour de la fiche abonnée. Veuillez ressayer plus tard</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script>
 
@@ -244,7 +299,7 @@
                 errorModal.prop('hidden', true);
             });
 
-            $(window).click(function() {
+            $(window).click(function () {
                 successModal.prop('hidden', true);
                 errorModal.prop('hidden', true);
             });

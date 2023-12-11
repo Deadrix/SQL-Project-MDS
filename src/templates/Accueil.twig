@@ -3,36 +3,38 @@
 {% block main %}
     <section id="searchLivre" hidden="hidden">
         <form id="formSearchLivre" action="../controller/Accueil.php" method="post" autocomplete="off"
-              class="flex justify-between gap-2 border-b border-blue-mds rounded-2xl py-3 px-2">
+              class="flex gap-2 justify-between items-center border-b border-blue-mds rounded-2xl py-3 px-2">
 
             <input id="hiddenInput" type="hidden" name="hiddenInput" value="">
 
-            <div class="flex gap-2 items-center">
-                <label for="titre">Titre :</label>
-                <input type="text" id="titre" name="titre" class="px-1.5" placeholder="Veuillez saisir un titre...">
+            <div class="flex flex-col gap-2">
+                <label for="titre" class="px-1.5">Titre :</label>
+                <input type="text" id="titre" name="titre" class="px-1.5 bg-transparent" placeholder="Saisir un titre...">
             </div>
 
-            <div class="flex gap-2 items-center">
-                <label for="auteur">Auteur :</label>
-                <input type="text" id="auteur" name="auteur" class="px-1.5" placeholder="Veuillez saisir un auteur...">
+            <div class="flex flex-col gap-2">
+                <label for="auteur" class="px-1.5">Auteur :</label>
+                <input type="text" id="auteur" name="auteur" class="px-1.5 bg-transparent" placeholder="Saisir un auteur...">
             </div>
 
-            <div class="flex gap-2 items-center">
-                <label for="editeur">Editeur :</label>
-                <input type="text" id="editeur" name="editeur" class="px-1.5"
-                       placeholder="Veuillez saisir un éditeur...">
+            <div class="flex flex-col gap-2">
+                <label for="editeur" class="px-1.5">Editeur :</label>
+                <input type="text" id="editeur" name="editeur" class="px-1.5 bg-transparent"
+                       placeholder="Saisir un éditeur...">
             </div>
 
-            <div class="flex gap-2 items-center">
+            <div class="flex flex-col gap-2">
                 <p>Disponible :</p>
-                <label for="disponibleoui">Oui</label>
-                <input type="radio" id="disponibleoui" name="disponible" value="1">
+                <div class="flex gap-2">
+                    <label for="disponibleoui">Oui</label>
+                    <input type="radio" id="disponibleoui" name="disponible" value="1">
 
-                <label for="disponiblenon">Non</label>
-                <input type="radio" id="disponiblenon" name="disponible" value="0">
+                    <label for="disponiblenon">Non</label>
+                    <input type="radio" id="disponiblenon" name="disponible" value="0">
 
-                <label for="disponiblepeuimporte">Peu importe</label>
-                <input type="radio" id="disponiblepeuimporte" name="disponible" value="" checked>
+                    <label for="disponiblepeuimporte">Peu importe</label>
+                    <input type="radio" id="disponiblepeuimporte" name="disponible" value="" checked>
+                </div>
             </div>
             <button id="rechercher"
                     class="py-2 px-4 border border-transparent shadow-sm text-sm rounded-full text-black bg-blue-mds hover:bg-opacity-75">
@@ -51,7 +53,7 @@
                     <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-5/12">Titre</th>
                     <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-3/12">Auteur</th>
                     <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-2/12">Éditeur</th>
-                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-1/12">Dernier Emprunt</th>
+                    <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-1/12">Emprunt</th>
                     <th class="whitespace-nowrap text-center pt-4 pb-1 w-1/12">Disponible</th>
                 </tr>
                 </thead>
