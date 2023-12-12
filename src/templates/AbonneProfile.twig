@@ -80,7 +80,7 @@
                 </form>
             </section>
 
-            <section class="flex">
+            <section class="flex gap-5">
                 {% if emprunts.message is defined %}
                     <h1>{{ emprunts.message }}</h1>
                 {% else %}
@@ -113,6 +113,7 @@
                     <h1>{{ recommandations.message }}</h1>
                 {% else %}
                     <section id="AbonneRecommandation" class="w-1/2">
+                        <h2 class="w-full text-center mb-2">Recommandation</h2>
                         <table class=" table-fixed w-full">
                             <thead>
                             <tr>
