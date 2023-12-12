@@ -58,40 +58,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE em.id_abonne = :id
             ORDER BY em.date_emprunt DESC";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':id', $_GET['id']);
-    $stmt->execute();
+    $stmt->execute(['id' => $_GET['id']]);
     $emprunts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $sqltest = "SELECT li.categorie
-        FROM livre li
-        JOIN emprunt em ON em.id_livre = li.id
-        WHERE id_abonne = :id
-            AND li.categorie IS NOT NULL  -- Exclure les catégories null de la sous-requête
-        GROUP BY li.categorie
-        ORDER BY COUNT(*) DESC
-        LIMIT 1";
-    $stmt = $pdo->prepare($sqltest);
-    $stmt->bindValue(':id', $_GET['id']);
-    $stmt->execute();
-    $test = $stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($test);
-
     if ($emprunts) {
-        $sqlRecommandation = "SELECT li.titre, li.categorie
-FROM emprunt em
-JOIN livre li ON em.id_livre = li.id
-WHERE id_abonne = :id
-    AND li.categorie IS NOT NULL  -- Exclure les catégories null des résultats 
-    AND li.categorie = :topCategorie
-    AND em.date_emprunt >= DATE_SUB(NOW(), INTERVAL 1 YEAR)
-    AND li.dispo = 1
-GROUP BY li.titre
-ORDER BY COUNT(*) DESC
-LIMIT 5;";
+        $sqlRecommandation = "SELECT li.titre, au.nom AS auteur
+                                FROM livre li
+                                    JOIN emprunt em ON em.id_livre = li.id
+                                    JOIN auteur au on au.id = li.id_auteur
+                                WHERE li.categorie =
+                                      (
+                                        SELECT li_sub.categorie
+                                        FROM emprunt em_sub
+                                        JOIN livre li_sub ON em_sub.id_livre = li_sub.id
+                                        WHERE em_sub.id_abonne = :id
+                                        AND li_sub.categorie <> ''
+                                        GROUP BY li_sub.categorie
+                                        ORDER BY COUNT(*) DESC
+                                        LIMIT 1
+                                      )
+                                AND em.date_emprunt >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+                                AND li.dispo = 1
+                                GROUP BY li.titre
+                                ORDER BY COUNT(*) DESC
+                                LIMIT 5";
         $stmt = $pdo->prepare($sqlRecommandation);
-        $stmt->bindValue(':id', $_GET['id']);
-        $stmt->bindValue(':topCategorie', $test['categorie']);
-        $stmt->execute();
+        $stmt->execute(['id' => $_GET['id']]);
         $recommandations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
         $emprunts["message"] = "L'utilisateur n'a jamais emprunté de livre.";

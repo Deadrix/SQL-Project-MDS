@@ -570,6 +570,18 @@ video {
   }
 }
 
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .visible{
   visibility: visible;
 }
@@ -612,6 +624,11 @@ video {
   margin-bottom: 0.5rem;
 }
 
+.mx-2{
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
 .mb-2{
   margin-bottom: 0.5rem;
 }
@@ -630,6 +647,10 @@ video {
 
 .mt-5{
   margin-top: 1.25rem;
+}
+
+.mt-6{
+  margin-top: 1.5rem;
 }
 
 .line-clamp-1{
@@ -791,12 +812,20 @@ video {
   border-width: 1px;
 }
 
+.border-2{
+  border-width: 2px;
+}
+
 .border-b{
   border-bottom-width: 1px;
 }
 
 .border-t{
   border-top-width: 1px;
+}
+
+.border-solid{
+  border-style: solid;
 }
 
 .border-black{
@@ -821,6 +850,11 @@ video {
 
 .border-transparent{
   border-color: transparent;
+}
+
+.border-gray-300{
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
 .border-b-blue-mds{
@@ -864,6 +898,14 @@ video {
   padding: 1.5rem;
 }
 
+.p-3{
+  padding: 0.75rem;
+}
+
+.p-4{
+  padding: 1rem;
+}
+
 .px-1{
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -904,6 +946,11 @@ video {
   padding-bottom: 1.25rem;
 }
 
+.px-3{
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
 .pb-1{
   padding-bottom: 0.25rem;
 }
@@ -932,6 +979,10 @@ video {
   text-align: center;
 }
 
+.text-right{
+  text-align: right;
+}
+
 .font-manrope{
   font-family: Manrope, sans-serif;
 }
@@ -949,6 +1000,16 @@ video {
 .text-sm{
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+.text-2xl{
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-xl{
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .font-bold{

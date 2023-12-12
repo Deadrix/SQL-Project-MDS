@@ -80,57 +80,70 @@
                 </form>
             </section>
 
-            <section class="flex gap-5">
+            <section class="flex gap-5 mt-6">
                 {% if emprunts.message is defined %}
-                    <h1>{{ emprunts.message }}</h1>
+                    <h2>{{ emprunts.message }}</h2>
                 {% else %}
                     <section id="AbonneEmprunts" class="w-1/2">
-                        <h2 class="w-full text-center mb-2">Historique</h2>
-                        <table class=" table-fixed w-full">
-                            <thead>
-                            <tr>
-                                <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1 w-4/5">Titre</th>
-                                <th class="whitespace-nowrap text-center pe-4 pt-4 pb-1 w-1/5">Emprunt</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for emprunt in emprunts %}
+                        <fieldset class="border-2 border-blue-mds p-4 rounded-2xl">
+                            <legend class="text-center text-xl px-3">
+                                Historique des emprunts
+                            </legend>
+                            <table class=" table-fixed w-full">
+                                <thead>
                                 <tr>
-                                    <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">
-                                        <span class="line-clamp-1">{{ emprunt.titre }}</span>
-                                    </td>
-                                    <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 text-center">
-                                        {{ emprunt.date |date("d/m/Y") }}
-                                    </td>
+                                    <th class="whitespace-nowrap text-left pe-4 pb-1 w-4/5">Titre</th>
+                                    <th class="whitespace-nowrap text-center pe-4 pb-1 w-1/5">Emprunt</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {% for emprunt in emprunts %}
+                                    <tr>
+                                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1">
+                                            <span class="line-clamp-1">{{ emprunt.titre }}</span>
+                                        </td>
+                                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1 text-center">
+                                            {{ emprunt.date |date("d/m/Y") }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </fieldset>
                     </section>
                 {% endif %}
 
                 {% if recommandations.message is defined %}
-                    <h1>{{ recommandations.message }}</h1>
+                    <h2>{{ recommandations.message }}</h2>
                 {% else %}
                     <section id="AbonneRecommandation" class="w-1/2">
-                        <h2 class="w-full text-center mb-2">Recommandation</h2>
-                        <table class=" table-fixed w-full">
-                            <thead>
-                            <tr>
-                                <th class="whitespace-nowrap text-left pe-4 pt-4 pb-1">Titre</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for recommandation in recommandations %}
+                        <fieldset class="border-2 border-blue-mds p-4 rounded-2xl">
+                            <legend class="text-center text-xl px-3">
+                                Recommandations
+                            </legend>
+                            <table class=" table-fixed w-full">
+                                <thead>
                                 <tr>
-                                    <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
-                                        title="{{ recommandation.titre }}">
-                                        <span class="line-clamp-1">{{ recommandation.titre }}</span>
-                                    </td>
+                                    <th class="whitespace-nowrap text-left pt-4 pb-1">Titre</th>
+                                    <th class="whitespace-nowrap text-right pt-4 pb-1">Auteur</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {% for recommandation in recommandations %}
+                                    <tr>
+                                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                                            title="{{ recommandation.titre }}">
+                                            <span class="line-clamp-1">{{ recommandation.titre }}</span>
+                                        </td>
+                                        <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
+                                            title="{{ recommandation.auteur }}">
+                                            <span class="line-clamp-1 text-right">{{ recommandation.auteur }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </fieldset>
                     </section>
                 {% endif %}
             </section>
