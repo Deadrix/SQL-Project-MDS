@@ -29,7 +29,7 @@ CREATE TABLE utilisateur (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) UNIQUE NOT NULL,
-    role VARCHAR(50) NOT NULL,
+    role ENUM ('abonne','gestionnaire') NOT NULL,
     id_abonne INT NULL,
     FOREIGN KEY (id_abonne) REFERENCES abonne(id)
 ) ENGINE = InnoDB;

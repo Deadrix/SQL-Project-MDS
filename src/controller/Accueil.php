@@ -29,15 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($_POST["hiddenInput"] === "rechercher") {
         $titre = htmlspecialchars($_POST["titre"]);
-            $auteur = htmlspecialchars($_POST["auteur"]);
-            $editeur = htmlspecialchars($_POST["editeur"]);
-            $disponible = htmlspecialchars($_POST["disponible"]);
-            $_SESSION["filtres"] = [
-                "titre" => $titre,
-                "auteur" => $auteur,
-                "editeur" => $editeur,
-                "disponible" => $disponible
-            ];
+        $auteur = htmlspecialchars($_POST["auteur"]);
+        $editeur = htmlspecialchars($_POST["editeur"]);
+        $disponible = htmlspecialchars($_POST["disponible"]);
+        $_SESSION["filtres"] = [
+            "titre" => $titre,
+            "auteur" => $auteur,
+            "editeur" => $editeur,
+            "disponible" => $disponible
+        ];
         $_SESSION["page"] = 0;
     } else if ($_POST["hiddenInput"] === "suivant") {
         if (isset($_SESSION["filtres"])) {
@@ -83,9 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             LIMIT 20 OFFSET :offset;
         ";
     $sth = $pdo->prepare($sql);
-    $sth->bindValue(':titre', "%".$titre."%");
-    $sth->bindValue(':auteur', "%".$auteur."%");
-    $sth->bindValue(':editeur', "%".$editeur."%");
+    $sth->bindValue(':titre', "%" . $titre . "%");
+    $sth->bindValue(':auteur', "%" . $auteur . "%");
+    $sth->bindValue(':editeur', "%" . $editeur . "%");
     $sth->bindValue(':disponibilite', $disponible);
     $sth->bindValue(':offset', $offset, PDO::PARAM_INT);
     $sth->execute();
@@ -118,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     unset($_SESSION["page"]);
     unset($_SESSION["filtres"]);
+
     $sql =
         "
             SELECT li.titre as titre, au.nom AS auteur, ed.nom AS editeur, li.dispo AS disponibilite, (

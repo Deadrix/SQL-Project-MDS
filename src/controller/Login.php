@@ -29,6 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     echo $twig->render('Login.twig', [
-        'title' => 'login'
+        'title' => 'Login'
     ]);
 }

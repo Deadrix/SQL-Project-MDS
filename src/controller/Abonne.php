@@ -12,6 +12,22 @@ $twig = new Environment($loader);
 session_start();
 $pdo = connectToDatabase();
 
+if (!isset($_SESSION["user"])) {
+    echo $twig->render('Login.twig', [
+        'title' => 'Login',
+        'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+    ]);
+    return;
+}
+
+if ($_SESSION["user"]["role"] !== "gestionnaire") {
+    echo $twig->render('Login.twig', [
+        'title' => 'Login',
+        'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+    ]);
+    return;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $nom = '';
@@ -87,9 +103,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         ";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':nom', "%".$nom."%");
-    $stmt->bindValue(':prenom', "%".$prenom."%");
-    $stmt->bindValue(':ville', "%".$ville."%");
+    $stmt->bindValue(':nom', "%" . $nom . "%");
+    $stmt->bindValue(':prenom', "%" . $prenom . "%");
+    $stmt->bindValue(':ville', "%" . $ville . "%");
     $stmt->bindValue(':abonnement', $abonnement);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
@@ -122,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     unset($_SESSION["page"]);
     unset($_SESSION["filtres"]);
+
     $sql = "
             SELECT id, nom, prenom, ville, 
                 IF(date_fin_abo < CURDATE(), TRUE, FALSE) AS abonnement
