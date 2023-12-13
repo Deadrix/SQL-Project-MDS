@@ -20,15 +20,9 @@ ALTER TABLE livre ADD COLUMN dispo tinyint;
 
 -- Updates livre dispo field base on the last "date_retour"
 UPDATE IGNORE livre l
-SET l.dispo = CASE 
-    WHEN (
-        SELECT MAX(e.date_retour) 
-        FROM emprunt e 
-        WHERE e.id_livre = l.id
-    ) < CURDATE()
-    THEN TRUE
-    ELSE FALSE
-    END;
+SET l.dispo = IF((SELECT MAX(e.date_retour)
+                  FROM emprunt e
+                  WHERE e.id_livre = l.id) < CURDATE(), TRUE, FALSE);
 
 -- Create user table
 CREATE TABLE utilisateur (
