@@ -148,48 +148,50 @@
                 {% endif %}
             </section>
 
-            <div class="fixed z-10 inset-0 m-12" id="successModal" hidden="hidden">
-                <div class="flex items-center justify-center min-h-screen">
-                    <div class="bg-white w-full max-w-md p-6 shadow-md border border-green-500 rounded-2xl">
-                        <div class="text-center">
-                            <div class="flex justify-between">
-                                <h3 class="text-lg font-semibold mt-2">Mise à jour réussie</h3>
-                                <button id="closeSuccessModal"
-                                        class="text-green-500 hover:text-green-700 focus:outline-none">
-                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
+            <section id="Modales">
+                <div class="fixed z-10 inset-0 m-12" id="successModal" hidden="hidden">
+                    <div class="flex items-center justify-center min-h-screen">
+                        <div class="bg-white w-full max-w-md p-6 shadow-md border border-green-500 rounded-2xl">
+                            <div class="text-center">
+                                <div class="flex justify-between">
+                                    <h3 class="text-lg font-semibold mt-2">Mise à jour réussie</h3>
+                                    <button id="closeSuccessModal"
+                                            class="text-green-500 hover:text-green-700 focus:outline-none">
+                                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <br>
+                                <p>La fiche abonnée a bien été mise à jour</p>
                             </div>
-                            <br>
-                            <p>La fiche abonnée a bien été mise à jour</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="fixed z-10 inset-0 m-12" id="errorModal" hidden="hidden">
-                <div class="flex items-center justify-center min-h-screen">
-                    <div class="bg-white w-full max-w-md p-6 shadow-md border border-red-500 border-opacity-90 rounded-2xl">
-                        <div class="text-center">
-                            <div class="flex justify-between">
-                                <h3 class="text-lg font-semibold mt-2">Échec de la mise à jour.</h3>
-                                <button id="closeErrorModal"
-                                        class="text-red-500 text-opacity-90 hover:text-opacity-100 focus:outline-none">
-                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
+                <div class="fixed z-10 inset-0 m-12" id="errorModal" hidden="hidden">
+                    <div class="flex items-center justify-center min-h-screen">
+                        <div class="bg-white w-full max-w-md p-6 shadow-md border border-red-500 border-opacity-90 rounded-2xl">
+                            <div class="text-center">
+                                <div class="flex justify-between">
+                                    <h3 class="text-lg font-semibold mt-2">Échec de la mise à jour.</h3>
+                                    <button id="closeErrorModal"
+                                            class="text-red-500 text-opacity-90 hover:text-opacity-100 focus:outline-none">
+                                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <br>
+                                <p>Une erreur est survenue lors de la mise à jour de la fiche abonnée. Veuillez ressayer
+                                    plus tard</p>
                             </div>
-                            <br>
-                            <p>Une erreur est survenue lors de la mise à jour de la fiche abonnée. Veuillez ressayer
-                                plus tard</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         {% endif %}
 
         <script>
