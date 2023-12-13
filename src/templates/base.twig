@@ -11,6 +11,7 @@
 <body class="flex flex-col min-h-screen bg-white text-slate-900 ">
 
 <header class="border-b shadow-top-2xl mb-5">
+    {% set user = getCurrentUser() %}
     <div class="container mx-auto flex items-center justify-between py-5">
 
         <a href="../controller/Accueil.php">
@@ -20,8 +21,15 @@
         <h1 class="font-bold text-center">SQL Project</h1>
 
         <nav class="flex items-center gap-8">
+
             <button id="searchLivreButton">Chercher un livre</button>
-            <a href="../controller/Abonne.php">Chercher un abonné</a>
+            {% if user.id is not defined %}
+                <a href="../controller/Login.php">Connexion</a>
+            {% elseif user.role == "gestionnaire" %}
+                <a href="../controller/Abonne.php">Chercher un abonné</a>
+            {% else %}
+                vtff
+            {% endif %}
         </nav>
 
     </div>

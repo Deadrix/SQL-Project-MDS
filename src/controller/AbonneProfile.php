@@ -1,22 +1,14 @@
 <?php
-require_once '../../vendor/autoload.php';
+
+$twig = require_once '../functions/twigSetup.php';
 require_once '../functions/functions.php';
-
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
-$loader = new FilesystemLoader('../templates');
-$twig = new Environment($loader);
-
-session_start();
-$pdo = connectToDatabase();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!isset($_SESSION["user"])) {
         echo $twig->render('Login.twig', [
             'title' => 'Login',
-            'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+            'message' => 'authentication error',
         ]);
         return;
     }
@@ -24,12 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_SESSION["user"]["role"] !== "gestionnaire") {
         if ($_SESSION["user"]["id_abonne"] != $_GET["id"]){
             echo $twig->render('Login.twig', [
-                'title' => 'Accueil',
-                'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+                'title' => 'Login',
+                'message' => 'authentication error',
             ]);
             return;
         }
     }
+
+    $pdo = connectToDatabase();
 
     $id = htmlspecialchars($_POST["id"]);
     $nom = htmlspecialchars(ucwords(strtolower($_POST["nom"])));
@@ -57,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':date_inscription', $date_inscription);
     $stmt->bindParam(':date_fin_abo', $date_fin_abo);
     $result = $stmt->execute();
+    $pdo = null;
     if ($result !== false) {
         echo "true";
     } else {
@@ -68,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION["user"])) {
         echo $twig->render('Login.twig', [
             'title' => 'Login',
-            'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+            'message' => 'authentication error',
         ]);
         return;
     }
@@ -76,12 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_SESSION["user"]["role"] !== "gestionnaire") {
         if ($_SESSION["user"]["id_abonne"] != $_GET["id"]){
             echo $twig->render('Login.twig', [
-                'title' => 'Accueil',
-                'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+                'title' => 'Login',
+                'message' => 'authentication error',
             ]);
             return;
         }
     }
+
+    $pdo = connectToDatabase();
 
     $sql = "SELECT * FROM abonne WHERE id = :id";
     $stmt = $pdo->prepare($sql);
@@ -96,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $_GET['id']]);
     $emprunts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $pdo = null;
 
     if ($emprunts) {
         $sqlRecommandation = "SELECT li.titre, au.nom AS auteur

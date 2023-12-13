@@ -1,41 +1,43 @@
 {% extends 'base.twig' %}
 
     {% block main %}
-        <section id="mainSection"
-                 class="opacity-0 transform translate-y-full flex-col justify-center items-center h-full w-1/3 transition duration-1000 ease-in-out">
-            {% if message != '' %}
-                <h1 class="text-center">{{ message }}</h1>
-            {% endif %}
-            <section id="AbonneProfile" class="w-full">
-                <form id="formLogin" action="../controller/Login.php" method="post"
-                      class="items-end  rounded-2xl pt-3 pb-5 px-2 mt-10">
-                    <fieldset class="border-2 border-blue-mds p-4 rounded-2xl">
+        <section id="border" class="border-b-2 border-blue-mds rounded-2xl w-1/3">
+            <section id="mainSection"
+                     class="flex-col justify-center items-center h-full" hidden="hidden">
+                {% if message == "authentication error" %}
+                    <h1 class="text-center">Vous devez avoir les autorisations nécessaires pour accéder à cette page.</h1>
+                {% endif %}
+                <section id="AbonneProfile" class="w-full">
+                    <form id="formLogin" action="../controller/Login.php" method="post"
+                          class="items-end  rounded-2xl pt-3 pb-5 px-2 mt-10">
+                        <fieldset class="border-2 border-blue-mds p-4 rounded-2xl">
 
-                        <legend class="text-center text-xl px-3">
-                            Connexion
-                        </legend>
-                        <div class="flex flex-col gap-2 col-span-4 mb-4">
-                            <label for="email">Email :</label>
-                            <input type="email" id="email" name="email"
-                                   class="p-2 border border-blue-mds rounded-md" placeholder="Saisir votre email..."
-                                   required>
-                        </div>
+                            <legend class="text-center text-xl px-3">
+                                Connexion
+                            </legend>
+                            <div class="flex flex-col gap-2 col-span-4 mb-4">
+                                <label for="email">Email :</label>
+                                <input type="email" id="email" name="email"
+                                       class="p-2 border border-blue-mds rounded-md" placeholder="Saisir votre email..."
+                                       required>
+                            </div>
 
-                        <div class="flex flex-col gap-2 col-span-4 mb-4">
-                            <label for="password">Mot de passe :</label>
-                            <input type="text" id="password" name="password"
-                                   class="p-2 border border-blue-mds rounded-md"
-                                   placeholder="Saisir votre mot de passe..."
-                                   required>
-                        </div>
+                            <div class="flex flex-col gap-2 col-span-4 mb-4">
+                                <label for="password">Mot de passe :</label>
+                                <input type="text" id="password" name="password"
+                                       class="p-2 border border-blue-mds rounded-md"
+                                       placeholder="Saisir votre mot de passe..."
+                                       required>
+                            </div>
 
-                        <button id="login"
-                                class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-black hover:bg-red-500 hover:bg-opacity-90">
-                            Se connecter
-                        </button>
+                            <button id="login"
+                                    class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-black hover:bg-red-500 hover:bg-opacity-90">
+                                Se connecter
+                            </button>
 
-                    </fieldset>
-                </form>
+                        </fieldset>
+                    </form>
+                </section>
             </section>
         </section>
 
@@ -96,9 +98,8 @@
             let closeSuccessModal = $('#closeSuccessModal');
             let closeErrorModal = $('#closeErrorModal');
 
-            // on window load
             $(window).on('load', function () {
-                mainSection.removeClass('opacity-0 translate-y-full');
+                mainSection.slideDown(1000);
             });
 
             login.click(function () {
@@ -124,8 +125,10 @@
             $(document).click(function (event) {
                 if (!$(event.target).closest(successModal).length || !$(event.target).closest(errorModal).length) {
                     if (successModal.is(":visible")) {
-                        successModal.hide();
-                        location.reload();
+                        if (window.location.href.indexOf("Login") > -1)
+                            window.location.href = '../controller/Accueil.php';
+                        else
+                            location.reload();
                     } else {
                         errorModal.hide();
                     }

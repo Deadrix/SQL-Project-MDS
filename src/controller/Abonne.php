@@ -1,21 +1,13 @@
 <?php
 
-require_once '../../vendor/autoload.php';
+$twig = require_once '../functions/twigSetup.php';
 require_once '../functions/functions.php';
 
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
-$loader = new FilesystemLoader('../templates');
-$twig = new Environment($loader);
-
-session_start();
-$pdo = connectToDatabase();
 
 if (!isset($_SESSION["user"])) {
     echo $twig->render('Login.twig', [
         'title' => 'Login',
-        'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+        'message' => 'authentication error',
     ]);
     return;
 }
@@ -23,10 +15,12 @@ if (!isset($_SESSION["user"])) {
 if ($_SESSION["user"]["role"] !== "gestionnaire") {
     echo $twig->render('Login.twig', [
         'title' => 'Login',
-        'message' => 'Vous n\'avez pas les droits pour accéder à cette page.',
+        'message' => 'authentication error',
     ]);
     return;
 }
+
+$pdo = connectToDatabase();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

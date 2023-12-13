@@ -1,4 +1,5 @@
 <?php
+
 function connectToDatabase() : PDO {
     $user = 'SQLMDS';
     $pass = 'SQLMDS';
@@ -14,3 +15,4 @@ function connectToDatabase() : PDO {
         die("Erreur de base de données : " . $e->getMessage());
     }
 }
+
