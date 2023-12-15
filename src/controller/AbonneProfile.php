@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute(['id' => $_GET['id']]);
     $emprunts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($emprunts) {
+    if ($emprunts !== false) {
         $sqlRecommandation = "SELECT li.titre, au.nom AS auteur
                                 FROM livre li
                                     JOIN emprunt em ON em.id_livre = li.id
