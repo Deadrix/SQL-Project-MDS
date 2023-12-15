@@ -113,9 +113,9 @@
                     },
                     success: function (response) {
                         if (response === 'true') {
-                            successModal.show();
+                            successModal.slideDown("slow");
                         } else {
-                            errorModal.show();
+                            errorModal.slideDown("slow");
                             password.val('');
                         }
                     }
@@ -130,7 +130,7 @@
                         else
                             location.reload();
                     } else {
-                        errorModal.hide();
+                        errorModal.slideUp("slow");
                     }
                 }
             });

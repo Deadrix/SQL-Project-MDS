@@ -5,7 +5,7 @@ require_once '../functions/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    if (!isset($_SESSION["user"])) {
+    if (!isset($_SESSION["currentUser"])) {
         echo $twig->render('Login.twig', [
             'title' => 'Login',
             'message' => 'authentication error',
@@ -13,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
 
-    if ($_SESSION["user"]["role"] !== "gestionnaire") {
-        if ($_SESSION["user"]["id_abonne"] != $_GET["id"]){
+    if ($_SESSION["currentUser"]["role"] !== "gestionnaire") {
+        if ($_SESSION["currentUser"]["id_abonne"] != $_POST["id"]){
             echo $twig->render('Login.twig', [
                 'title' => 'Login',
                 'message' => 'authentication error',
@@ -25,31 +25,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pdo = connectToDatabase();
 
-    $id = htmlspecialchars($_POST["id"]);
     $nom = htmlspecialchars(ucwords(strtolower($_POST["nom"])));
     $prenom = htmlspecialchars(ucwords(strtolower($_POST["prenom"])));
     $date_naissance = htmlspecialchars($_POST["naissance"]);
     $adresse = htmlspecialchars(ucwords(strtolower($_POST["adresse"])));
     $code_postal = htmlspecialchars($_POST["codePostal"]);
     $ville = htmlspecialchars(ucwords(strtolower($_POST["ville"])));
-    $date_inscription = htmlspecialchars($_POST["debutAbonnement"]);
-    $date_fin_abo = htmlspecialchars($_POST["finAbonnement"]);
+    if ($_SESSION["currentUser"]["role"] === "gestionnaire") {
+        $date_inscription = htmlspecialchars($_POST["debutAbonnement"]);
+        $date_fin_abo = htmlspecialchars($_POST["finAbonnement"]);
+    }
+    $id = htmlspecialchars($_POST["id"]);
 
-    $sql = "
+    $sqlGestionnaire = "
             UPDATE abonne
-            SET nom = :nom, prenom = :prenom, date_naissance = :date_naissance, adresse = :adresse, code_postal = :code_postal, ville = :ville, date_inscription = :date_inscription, date_fin_abo = :date_fin_abo
+            SET nom = :nom, 
+                prenom = :prenom, 
+                date_naissance = :date_naissance, 
+                adresse = :adresse, 
+                code_postal = :code_postal, 
+                ville = :ville, 
+                date_inscription = :date_inscription, 
+                date_fin_abo = :date_fin_abo
             WHERE id = :id
         ";
+
+    $sqlAbonne = "
+            UPDATE abonne
+            SET nom = :nom, 
+                prenom = :prenom, 
+                date_naissance = :date_naissance, 
+                adresse = :adresse, 
+                code_postal = :code_postal, 
+                ville = :ville
+            WHERE id = :id
+        ";
+
+    if ($_SESSION["currentUser"]["role"] === "gestionnaire") {
+        $sql = $sqlGestionnaire;
+    } else {
+        $sql = $sqlAbonne;
+    }
+
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->bindParam(':nom', $nom);
     $stmt->bindParam(':prenom', $prenom);
     $stmt->bindParam(':date_naissance', $date_naissance);
     $stmt->bindParam(':adresse', $adresse);
     $stmt->bindParam(':code_postal', $code_postal);
     $stmt->bindParam(':ville', $ville);
-    $stmt->bindParam(':date_inscription', $date_inscription);
-    $stmt->bindParam(':date_fin_abo', $date_fin_abo);
+
+    if ($_SESSION["currentUser"]["role"] === "gestionnaire") {
+        $stmt->bindParam(':date_inscription', $date_inscription);
+        $stmt->bindParam(':date_fin_abo', $date_fin_abo);
+    }
+
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $result = $stmt->execute();
     $pdo = null;
     if ($result !== false) {
@@ -60,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-    if (!isset($_SESSION["user"])) {
+    if (!isset($_SESSION["currentUser"])) {
         echo $twig->render('Login.twig', [
             'title' => 'Login',
             'message' => 'authentication error',
@@ -68,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
 
-    if ($_SESSION["user"]["role"] !== "gestionnaire") {
-        if ($_SESSION["user"]["id_abonne"] != $_GET["id"]){
+    if ($_SESSION["currentUser"]["role"] !== "gestionnaire") {
+        if ($_SESSION["currentUser"]["id_abonne"] != $_GET["id"]){
             echo $twig->render('Login.twig', [
                 'title' => 'Login',
                 'message' => 'authentication error',
@@ -93,7 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $_GET['id']]);
     $emprunts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $pdo = null;
 
     if ($emprunts) {
         $sqlRecommandation = "SELECT li.titre, au.nom AS auteur
@@ -119,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare($sqlRecommandation);
         $stmt->execute(['id' => $_GET['id']]);
         $recommandations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = null;
     } else {
         $emprunts["message"] = "L'utilisateur n'a jamais emprunté de livre.";
         $recommandations["message"] = "Impossible de créer des recommandations personnalisée.";

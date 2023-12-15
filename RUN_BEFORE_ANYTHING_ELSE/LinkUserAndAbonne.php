@@ -10,7 +10,36 @@ $stmt->bindValue(":email", "gestionnaire@sqlmds.fr");
 $stmt->bindValue(":password", password_hash("gestionnaire", PASSWORD_BCRYPT));
 $stmt->execute();
 
-// We get all the abonnes
+$sqlFirstAbonne = "SELECT id FROM abonne ORDER BY id LIMIT 1 ";
+$stmt = $pdo->prepare($sqlFirstAbonne);
+$stmt->execute();
+$firstAbonne = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$sqlUpdateFirstAbonne = "
+                        UPDATE abonne
+                        SET nom = :nom, 
+                            prenom = :prenom, 
+                            date_naissance = :date_naissance, 
+                            adresse = :adresse, 
+                            code_postal = :code_postal, 
+                            ville = :ville, 
+                            date_inscription = :date_inscription, 
+                            date_fin_abo = :date_fin_abo
+                        WHERE id = :id
+                        ";
+$stmt = $pdo->prepare($sqlUpdateFirstAbonne);
+$stmt->bindValue(":nom", "Bouriche");
+$stmt->bindValue(":prenom", "Alexandre");
+$stmt->bindValue(":date_naissance", "1999-09-09");
+$stmt->bindValue(":adresse", "Place d'Armes");
+$stmt->bindValue(":code_postal", "78000");
+$stmt->bindValue(":ville", "Versailles");
+$stmt->bindValue(":date_inscription", "1999-09-09");
+$stmt->bindValue(":date_fin_abo", "2099-09-09");
+$stmt->bindValue(":id", $firstAbonne["id"]);
+$stmt->execute();
+
+// Get all the abonnes
 $sql = "SELECT id, nom, prenom FROM abonne";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();

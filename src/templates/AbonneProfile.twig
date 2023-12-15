@@ -49,19 +49,21 @@
                                disabled value="{{ abonne.ville }}">
                     </div>
 
-                    <div class="flex flex-col gap-2 col-span-4">
-                        <label for="debutAbonnement">Date d'inscription :</label>
-                        <input type="date" id="debutAbonnement" name="debutAbonnement"
-                               class="p-2 border border-blue-mds rounded-md" disabled
-                               value="{{ abonne.date_inscription }}">
-                    </div>
+                    {% if currentUser.role == "gestionnaire" %}
+                        <div class="flex flex-col gap-2 col-span-4">
+                            <label for="debutAbonnement">Date d'inscription :</label>
+                            <input type="date" id="debutAbonnement" name="debutAbonnement"
+                                   class="p-2 border border-blue-mds rounded-md" disabled
+                                   value="{{ abonne.date_inscription }}">
+                        </div>
 
-                    <div class="flex flex-col gap-2 col-span-4">
-                        <label for="finAbonnement">Date de fin d'abonnement :</label>
-                        <input type="date" id="finAbonnement" name="finAbonnement"
-                               class="p-2 border border-blue-mds rounded-md" disabled
-                               value="{{ abonne.date_fin_abo }}">
-                    </div>
+                        <div class="flex flex-col gap-2 col-span-4">
+                            <label for="finAbonnement">Date de fin d'abonnement :</label>
+                            <input type="date" id="finAbonnement" name="finAbonnement"
+                                   class="p-2 border border-blue-mds rounded-md" disabled
+                                   value="{{ abonne.date_fin_abo }}">
+                        </div>
+                    {% endif %}
 
                     <div class="flex gap-2 items-start col-span-4">
                         <button id="modifierAbonne"
@@ -199,7 +201,9 @@
             let modifierAbonne = $('#modifierAbonne');
             let annulerModifierAbonne = $('#annulerModifierAbonne');
             let updateAbonne = $('#updateAbonne');
+
             let formAbonneProfile = $('#formAbonneProfile');
+
             let hiddenInput = $('#hiddenInput');
             let nom = $('#nom');
             let prenom = $('#prenom');
@@ -209,6 +213,7 @@
             let ville = $('#ville');
             let debutAbonnement = $('#debutAbonnement');
             let finAbonnement = $('#finAbonnement');
+
             let nomValue = nom.val();
             let prenomValue = prenom.val();
             let naissanceValue = naissance.val();
@@ -217,10 +222,9 @@
             let villeValue = ville.val();
             let debutAbonnementValue = debutAbonnement.val();
             let finAbonnementValue = finAbonnement.val();
+
             let successModal = $('#successModal');
             let errorModal = $('#errorModal');
-            let closeSuccessModal = $('#closeSuccessModal');
-            let closeErrorModal = $('#closeErrorModal');
 
             modifierAbonne.click(function () {
                 event.preventDefault();
@@ -262,17 +266,6 @@
 
             updateAbonne.click(function () {
                 event.preventDefault();
-                modifierAbonne.show();
-                annulerModifierAbonne.hide();
-                updateAbonne.hide();
-                nom.prop('disabled', true);
-                prenom.prop('disabled', true);
-                naissance.prop('disabled', true);
-                adresse.prop('disabled', true);
-                codePostal.prop('disabled', true);
-                ville.prop('disabled', true);
-                debutAbonnement.prop('disabled', true);
-                finAbonnement.prop('disabled', true);
                 nomValue = nom.val();
                 prenomValue = prenom.val();
                 naissanceValue = naissance.val();
@@ -297,27 +290,33 @@
                     },
                     success: function (response) {
                         if (response === 'true') {
-                            successModal.prop('hidden', false);
+                            modifierAbonne.show();
+                            annulerModifierAbonne.hide();
+                            updateAbonne.hide();
+                            nom.prop('disabled', true);
+                            prenom.prop('disabled', true);
+                            naissance.prop('disabled', true);
+                            adresse.prop('disabled', true);
+                            codePostal.prop('disabled', true);
+                            ville.prop('disabled', true);
+                            debutAbonnement.prop('disabled', true);
+                            finAbonnement.prop('disabled', true);
+                            successModal.slideDown("slow");
                         } else {
-                            errorModal.prop('hidden', false);
+                            errorModal.slideDown("slow");
                         }
                     }
                 });
             });
 
-            closeSuccessModal.click(function () {
-                event.preventDefault();
-                successModal.prop('hidden', true);
-            });
-
-            closeErrorModal.click(function () {
-                event.preventDefault();
-                errorModal.prop('hidden', true);
-            });
-
-            $(window).click(function () {
-                successModal.prop('hidden', true);
-                errorModal.prop('hidden', true);
+            $(document).click(function (event) {
+                if (!$(event.target).closest(successModal).length || !$(event.target).closest(errorModal).length) {
+                    if (successModal.is(":visible")) {
+                        successModal.slideUp("slow");
+                    } else {
+                        errorModal.slideUp("slow");
+                    }
+                }
             });
 
         </script>

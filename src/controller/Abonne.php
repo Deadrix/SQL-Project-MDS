@@ -4,7 +4,7 @@ $twig = require_once '../functions/twigSetup.php';
 require_once '../functions/functions.php';
 
 
-if (!isset($_SESSION["user"])) {
+if (!isset($_SESSION["currentUser"])) {
     echo $twig->render('Login.twig', [
         'title' => 'Login',
         'message' => 'authentication error',
@@ -12,7 +12,7 @@ if (!isset($_SESSION["user"])) {
     return;
 }
 
-if ($_SESSION["user"]["role"] !== "gestionnaire") {
+if ($_SESSION["currentUser"]["role"] !== "gestionnaire") {
     echo $twig->render('Login.twig', [
         'title' => 'Login',
         'message' => 'authentication error',

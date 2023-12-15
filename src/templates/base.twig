@@ -11,7 +11,7 @@
 <body class="flex flex-col min-h-screen bg-white text-slate-900 ">
 
 <header class="border-b shadow-top-2xl mb-5">
-    {% set user = getCurrentUser() %}
+    {% set currentUser = getCurrentUser() %}
     <div class="container mx-auto flex items-center justify-between py-5">
 
         <a href="../controller/Accueil.php">
@@ -23,12 +23,16 @@
         <nav class="flex items-center gap-8">
 
             <button id="searchLivreButton">Chercher un livre</button>
-            {% if user.id is not defined %}
+            {% if currentUser.id is not defined %}
                 <a href="../controller/Login.php">Connexion</a>
-            {% elseif user.role == "gestionnaire" %}
+            {% elseif currentUser.role == "gestionnaire" %}
                 <a href="../controller/Abonne.php">Chercher un abonné</a>
-            {% else %}
-                vtff
+                <a href="../controller/CreateAbonne.php">Créer un abonné</a>
+                {% elseif currentUser.role == "abonne" %}
+                    <a href="../controller/AbonneProfile.php?id={{ currentUser.id_abonne }}">Mon compte</a>
+            {% endif %}
+            {% if currentUser.id is defined %}
+                <a href="../controller/Logout.php">Déconnexion</a>
             {% endif %}
         </nav>
 

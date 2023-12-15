@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               AND (NULLIF(:auteur, '') IS NULL OR LOWER(au.nom) COLLATE utf8mb4_unicode_ci LIKE LOWER(:auteur) COLLATE utf8mb4_unicode_ci)
               AND (NULLIF(:editeur, '') IS NULL OR LOWER(ed.nom) COLLATE utf8mb4_unicode_ci LIKE LOWER(:editeur) COLLATE utf8mb4_unicode_ci)
               AND (NULLIF(:disponibilite, '') IS NULL OR li.dispo = :disponibilite)
-            ORDER BY titre ASC
+            ORDER BY titre
             LIMIT 20 OFFSET :offset;
         ";
     $sth = $pdo->prepare($sql);

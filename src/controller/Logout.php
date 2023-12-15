@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION['user'] = null;
+$_SESSION['currentUser'] = null;
 
 $twig = require_once '../functions/twigSetup.php';
 require_once '../functions/functions.php';

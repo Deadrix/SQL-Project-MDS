@@ -1,0 +1,169 @@
+{% extends 'base.twig' %}
+
+    {% block main %}
+
+        {% if message != '' %}
+            <h1>{{ message }}</h1>
+        {% else %}
+            <section id="AbonneProfile" class="w-full">
+                <form id="formCreateAbonne" action="../controller/CreateAbonne.php" method="post"
+                      class="grid grid-cols-12 gap-7 items-end border-b border-blue-mds rounded-2xl pt-3 pb-5 px-2 mt-10">
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="nom">Nom :</label>
+                        <input type="text" id="nom" name="nom" class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="prenom">Prenom :</label>
+                        <input type="text" id="prenom" name="prenom" class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="naissance">Date de naissance :</label>
+                        <input type="date" id="naissance" name="naissance"
+                               class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-6">
+                        <label for="adresse">Adresse :</label>
+                        <input type="text" id="adresse" name="adresse" class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-2">
+                        <label for="codePostal">Code postal :</label>
+                        <input type="text" id="codePostal" name="codePostal"
+                               class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-4">
+                        <label for="ville">Ville :</label>
+                        <input type="text" id="ville" name="ville" class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex flex-col gap-2 col-span-6">
+                        <label for="email">Adresse email :</label>
+                        <input type="email" id="email" name="email"
+                               class="p-2 border border-blue-mds rounded-md">
+                    </div>
+
+                    <div class="flex gap-2 items-start col-span-6">
+                        <button id="annulerCreateAbonne"
+                                class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-white hover:bg-blue-mds hover:bg-opacity-75">
+                            Annuler
+                        </button>
+                        <button id="createAbonne"
+                                class="flex-1 py-2 px-4 border border-blue-mds shadow-sm font-semibold rounded-full text-blue-mds bg-white hover:border-black hover:text-black hover:bg-red-500 hover:bg-opacity-90">
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section id="Modales">
+                <div class="fixed z-10 inset-0 m-12" id="successModal" hidden="hidden">
+                    <div class="flex items-center justify-center min-h-screen">
+                        <div class="bg-white w-full max-w-md p-6 shadow-md border border-green-500 rounded-2xl">
+                            <div class="text-center">
+                                <div class="flex justify-between">
+                                    <h3 class="text-lg font-semibold mt-2">Création d'abonné réussie</h3>
+                                    <button id="closeSuccessModal"
+                                            class="text-green-500 hover:text-green-700 focus:outline-none">
+                                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <br>
+                                <p>Le nouvel abonné a bien été ajouté.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fixed z-10 inset-0 m-12" id="errorModal" hidden="hidden">
+                    <div class="flex items-center justify-center min-h-screen">
+                        <div class="bg-white w-full max-w-md p-6 shadow-md border border-red-500 border-opacity-90 rounded-2xl">
+                            <div class="text-center">
+                                <div class="flex justify-between">
+                                    <h3 class="text-lg font-semibold mt-2">Échec de la mise à jour.</h3>
+                                    <button id="closeErrorModal"
+                                            class="text-red-500 text-opacity-90 hover:text-opacity-100 focus:outline-none">
+                                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <br>
+                                <p>Une erreur est survenue lors de la création du nouvel abonné.</p>
+                                <p>Veuillez vérifier les données et ressayer.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <script>
+
+            let createAbonne = $('#createAbonne');
+            let annulerCreateAbonne = $('#annulerCreateAbonne');
+
+            let formCreateAbonne = $('#formCreateAbonne');
+
+            let nom = $('#nom');
+            let prenom = $('#prenom');
+            let naissance = $('#naissance');
+            let adresse = $('#adresse');
+            let codePostal = $('#codePostal');
+            let ville = $('#ville');
+            let email = $('#email');
+
+            let successModal = $('#successModal');
+            let errorModal = $('#errorModal');
+
+            annulerCreateAbonne.click(function () {
+                event.preventDefault();
+                window.location.reload();
+            });
+
+            createAbonne.click(function () {
+                event.preventDefault();
+                $.ajax({
+                    url: '../controller/CreateAbonne.php',
+                    type: 'POST',
+                    data: {
+                        nom: nom.val(),
+                        prenom: prenom.val(),
+                        naissance: naissance.val(),
+                        adresse: adresse.val(),
+                        codePostal: codePostal.val(),
+                        ville: ville.val(),
+                        email: email.val(),
+                    },
+                    success: function (response) {
+                        if (response === 'true') {
+                            successModal.slideDown("slow");
+                        } else {
+                            errorModal.slideDown("slow");
+                        }
+                    }
+                });
+            });
+
+            $(document).click(function (event) {
+                if (!$(event.target).closest(successModal).length || !$(event.target).closest(errorModal).length) {
+                    if (successModal.is(":visible")) {
+                        successModal.slideUp("slow");
+                        window.location.reload();
+                    } else {
+                        errorModal.slideUp("slow");
+                    }
+                }
+            });
+
+        </script>
+
+    {% endblock %}

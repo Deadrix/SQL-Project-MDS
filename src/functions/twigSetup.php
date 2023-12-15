@@ -10,7 +10,7 @@ $twig = new Environment($loader);
 
 session_start();
 $twig->addFunction(new TwigFunction('getCurrentUser', function () {
-    return $_SESSION['user'] ?? null; // Récupération de la variable 'user'
+    return $_SESSION['currentUser'] ?? null; // Récupération de la variable 'loggedUser'
 }));
 
 return $twig;
