@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $date_naissance = htmlspecialchars($_POST["naissance"]);
     $adresse = htmlspecialchars(ucwords(strtolower($_POST["adresse"])));
     $code_postal = htmlspecialchars($_POST["codePostal"]);
-    $ville = htmlspecialchars(ucwords(strtolower($_POST["ville"])));
+    $ville = htmlspecialchars(strtoupper($_POST["ville"]));
     if ($_SESSION["currentUser"]["role"] === "gestionnaire") {
         $date_inscription = htmlspecialchars($_POST["debutAbonnement"]);
         $date_fin_abo = htmlspecialchars($_POST["finAbonnement"]);

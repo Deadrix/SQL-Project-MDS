@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $date_naissance = htmlspecialchars($_POST["naissance"]);
     $adresse = htmlspecialchars(ucwords(strtolower($_POST["adresse"])));
     $code_postal = htmlspecialchars($_POST["codePostal"]);
-    $ville = htmlspecialchars(ucwords(strtolower($_POST["ville"])));
+    $ville = htmlspecialchars(strtoupper($_POST["ville"]));
     $email = htmlspecialchars($_POST["email"]);
 
     $sqlCreateAbonne = "

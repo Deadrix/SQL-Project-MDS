@@ -33,7 +33,7 @@ $stmt->bindValue(":prenom", "Alexandre");
 $stmt->bindValue(":date_naissance", "1999-09-09");
 $stmt->bindValue(":adresse", "Place d'Armes");
 $stmt->bindValue(":code_postal", "78000");
-$stmt->bindValue(":ville", "Versailles");
+$stmt->bindValue(":ville", "VERSAILLES");
 $stmt->bindValue(":date_inscription", "1999-09-09");
 $stmt->bindValue(":date_fin_abo", "2099-09-09");
 $stmt->bindValue(":id", $firstAbonne["id"]);
