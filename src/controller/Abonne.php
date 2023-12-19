@@ -15,7 +15,7 @@ if (!isset($_SESSION["currentUser"])) {
 if ($_SESSION["currentUser"]["role"] !== "gestionnaire") {
     echo $twig->render('Login.twig', [
         'title' => 'Login',
-        'message' => 'authentication error',
+        'message' => 'permission error',
     ]);
     return;
 }

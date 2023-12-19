@@ -23,15 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pdo = connectToDatabase();
 
-    $nom = htmlspecialchars(ucwords(strtolower($_POST["nom"])));
-    $prenom = htmlspecialchars(ucwords(strtolower($_POST["prenom"])));
-    $date_naissance = htmlspecialchars($_POST["naissance"]);
-    $adresse = htmlspecialchars(ucwords(strtolower($_POST["adresse"])));
-    $code_postal = htmlspecialchars($_POST["codePostal"]);
-    $ville = htmlspecialchars(strtoupper($_POST["ville"]));
-    $email = htmlspecialchars($_POST["email"]);
+    try {
+        $pdo->beginTransaction();
 
-    $sqlCreateAbonne = "
+        $nom = htmlspecialchars(ucwords(strtolower($_POST["nom"])));
+        $prenom = htmlspecialchars(ucwords(strtolower($_POST["prenom"])));
+        $date_naissance = htmlspecialchars($_POST["naissance"]);
+        $adresse = htmlspecialchars(ucwords(strtolower($_POST["adresse"])));
+        $code_postal = htmlspecialchars($_POST["codePostal"]);
+        $ville = htmlspecialchars(strtoupper($_POST["ville"]));
+        $email = htmlspecialchars($_POST["email"]);
+
+        $sqlCreateAbonne = "
             INSERT INTO abonne
                     (nom, 
                     prenom,
@@ -51,39 +54,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     DATE_ADD(CURDATE(), INTERVAL 1 YEAR))                                    
         ";
 
-    $stmt = $pdo->prepare($sqlCreateAbonne);
-    $stmt->bindParam(':nom', $nom);
-    $stmt->bindParam(':prenom', $prenom);
-    $stmt->bindParam(':date_naissance', $date_naissance);
-    $stmt->bindParam(':adresse', $adresse);
-    $stmt->bindParam(':code_postal', $code_postal);
-    $stmt->bindParam(':ville', $ville);
-    $result = $stmt->execute();
+        $stmt = $pdo->prepare($sqlCreateAbonne);
+        $stmt->bindParam(':nom', $nom);
+        $stmt->bindParam(':prenom', $prenom);
+        $stmt->bindParam(':date_naissance', $date_naissance);
+        $stmt->bindParam(':adresse', $adresse);
+        $stmt->bindParam(':code_postal', $code_postal);
+        $stmt->bindParam(':ville', $ville);
+        $stmt->execute();
 
-    if ($result !== false) {
         $abonneId = $pdo->lastInsertId();
+
         $sqlCreateUser = "INSERT INTO utilisateur (email, password, role, id_abonne) VALUES (:email, :password, 'abonne', :id_abonne)";
         $stmt = $pdo->prepare($sqlCreateUser);
         $stmt->bindValue(":email", $email);
         $stmt->bindValue(":password", password_hash(str_replace([" ", "'"], "", (strtolower($prenom . $nom))), PASSWORD_BCRYPT));
         $stmt->bindValue(":id_abonne", $abonneId);
-        $result = $stmt->execute();
-        if ($result !== false) {
-            echo "true";
-        } else {
-            $sqlDeleteAbonne = "DELETE FROM abonne WHERE id = :id_abonne";
-            $stmt = $pdo->prepare($sqlDeleteAbonne);
-            $stmt->bindValue(":id_abonne", $abonneId);
-            $stmt->execute();
-            echo "false";
-        }
-    } else {
+        $stmt->execute();
+
+        $pdo->commit();
+        echo "true";
+
+    } catch (PDOException $e) {
+
+        $pdo->rollback();
         echo "false";
     }
+
     $pdo = null;
 
-} else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-
+} else {
     if (!isset($_SESSION["currentUser"])) {
         echo $twig->render('Login.twig', [
             'title' => 'Login',
