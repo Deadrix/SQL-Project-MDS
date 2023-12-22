@@ -64,7 +64,7 @@
                         <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
                             title="{{ abonne.prenom }}"><span class="line-clamp-1">{{ abonne.prenom }}</span></td>
                         <td class="border-b border-b-blue-mds pe-4 pt-3 pb-1"
-                            title="{{ abonne.ville }}"><span class="line-clamp-1">{{ abonne.ville }}</span></td>
+                            title="{{ abonne.ville | upper }}"><span class="line-clamp-1">{{ abonne.ville | upper }}</span></td>
                         <td class="whitespace-nowrap">
                             {% if abonne.abonnement %}
                                 <div class="rounded-full bg-green-300 border border-black">&nbsp</div>

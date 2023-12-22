@@ -3,19 +3,22 @@ require_once "../src/functions/functions.php";
 
 $pdo = connectToDatabase();
 
-
+// Create the gestionnaire
 $sqlAdmin = "INSERT INTO utilisateur (email, password, role) VALUES (:email, :password, 'gestionnaire')";
 $stmt = $pdo->prepare($sqlAdmin);
 $stmt->bindValue(":email", "gestionnaire@sqlmds.fr");
 $stmt->bindValue(":password", password_hash("gestionnaire", PASSWORD_BCRYPT));
 $stmt->execute();
 
-$sqlFirstAbonne = "SELECT id FROM abonne ORDER BY id LIMIT 1 ";
+
+// Get the first two abonnes
+$sqlFirstAbonne = "SELECT id FROM abonne ORDER BY id LIMIT 2";
 $stmt = $pdo->prepare($sqlFirstAbonne);
 $stmt->execute();
-$firstAbonne = $stmt->fetch(PDO::FETCH_ASSOC);
+$first2Abonne = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$sqlUpdateFirstAbonne = "
+
+$sqlUpdateAbonne = "
                         UPDATE abonne
                         SET nom = :nom, 
                             prenom = :prenom, 
@@ -27,16 +30,31 @@ $sqlUpdateFirstAbonne = "
                             date_fin_abo = :date_fin_abo
                         WHERE id = :id
                         ";
-$stmt = $pdo->prepare($sqlUpdateFirstAbonne);
+
+// Update the first abonne
+$stmt = $pdo->prepare($sqlUpdateAbonne);
 $stmt->bindValue(":nom", "Bouriche");
 $stmt->bindValue(":prenom", "Alexandre");
 $stmt->bindValue(":date_naissance", "1999-09-09");
-$stmt->bindValue(":adresse", "Place d'Armes");
-$stmt->bindValue(":code_postal", "78000");
-$stmt->bindValue(":ville", "VERSAILLES");
+$stmt->bindValue(":adresse", "Chateau de Duloc");
+$stmt->bindValue(":code_postal", "00000");
+$stmt->bindValue(":ville", "FORT FORT LOINTAIN");
 $stmt->bindValue(":date_inscription", "1999-09-09");
 $stmt->bindValue(":date_fin_abo", "2099-09-09");
-$stmt->bindValue(":id", $firstAbonne["id"]);
+$stmt->bindValue(":id", $first2Abonne[0]["id"]);
+$stmt->execute();
+
+// Update the second abonne
+$stmt = $pdo->prepare($sqlUpdateAbonne);
+$stmt->bindValue(":nom", "Abonne");
+$stmt->bindValue(":prenom", "Abonne");
+$stmt->bindValue(":date_naissance", "1970-01-01");
+$stmt->bindValue(":adresse", "128 Avenue de Fes");
+$stmt->bindValue(":code_postal", "34090");
+$stmt->bindValue(":ville", "MONTPELLIER");
+$stmt->bindValue(":date_inscription", "1970-01-01");
+$stmt->bindValue(":date_fin_abo", "2070-01-01");
+$stmt->bindValue(":id", $first2Abonne[1]["id"]);
 $stmt->execute();
 
 // Get all the abonnes
@@ -45,8 +63,9 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $abonnes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$offset = 0;
 // For each abonne, we create a utilisateur
+// The offset is here to avoid duplicate email
+$offset = 0;
 foreach ($abonnes as $abonne) {
     try {
         $sql = "INSERT INTO utilisateur (email, password, role, id_abonne) VALUES (:email, :password, 'abonne', :id_abonne)";
@@ -67,4 +86,13 @@ foreach ($abonnes as $abonne) {
     }
 }
 
+// Update the password and mail of the abonne "abonne"
+$updatePassword = "UPDATE utilisateur SET password = :password, email = :newemail WHERE email = :email";
+$stmt = $pdo->prepare($updatePassword);
+$stmt->bindValue(":password", password_hash("abonne", PASSWORD_BCRYPT));
+$stmt->bindValue(":newemail", "abonne@sqlmds.fr");
+$stmt->bindValue(":email", "abonneabonne@sqlmds.fr");
+$stmt->execute();
+
+// Close the connection
 $pdo = null;

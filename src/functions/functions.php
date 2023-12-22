@@ -1,12 +1,10 @@
 <?php
 
-function connectToDatabase() : PDO {
-    $user = 'SQLMDS';
-    $pass = 'SQLMDS';
-    $dbname = 'sqlmds';
-    $host = 'localhost';
-    $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+require_once __DIR__ . "/../../config.php";
 
+function connectToDatabase(): PDO {
+
+    global $dsn, $user, $pass;
     try {
         $pdo = new PDO($dsn, $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

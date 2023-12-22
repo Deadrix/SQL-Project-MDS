@@ -34,13 +34,13 @@ SET l.dispo = IF((SELECT e.date_retour
                                                WHERE e3.id_livre = l.id)
                                            ) IS NULL, TRUE, FALSE));
 
--- Create user table
-CREATE TABLE utilisateur
-(
-    id        INT AUTO_INCREMENT PRIMARY KEY,
-    email     VARCHAR(255) UNIQUE            NOT NULL,
-    password  VARCHAR(255) UNIQUE            NOT NULL,
-    role      ENUM ('abonne','gestionnaire') NOT NULL,
-    id_abonne INT                            NULL,
-    FOREIGN KEY (id_abonne) REFERENCES abonne (id)
-) ENGINE = InnoDB;
+# -- Create user table
+# CREATE TABLE utilisateur
+# (
+#     id        INT AUTO_INCREMENT PRIMARY KEY,
+#     email     VARCHAR(255) UNIQUE            NOT NULL,
+#     password  VARCHAR(255) UNIQUE            NOT NULL,
+#     role      ENUM ('abonne','gestionnaire') NOT NULL,
+#     id_abonne INT                            NULL,
+#     FOREIGN KEY (id_abonne) REFERENCES abonne (id)
+# ) ENGINE = InnoDB;
