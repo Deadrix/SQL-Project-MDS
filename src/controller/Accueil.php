@@ -3,8 +3,6 @@
 $twig = require_once '../functions/twigSetup.php';
 require_once '../functions/functions.php';
 
-$pdo = connectToDatabase();
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $titre = '';
@@ -59,31 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hidePrecedent = true;
     }
 
-    $sql = "
-            SELECT li.titre as titre, au.nom AS auteur, ed.nom AS editeur, li.dispo AS disponibilite, (
-                SELECT MAX(em.date_emprunt)
-                FROM emprunt em
-                WHERE em.id_livre = li.id
-            ) AS dernieremprunt
-            FROM livre li
-            JOIN auteur au ON au.id = li.id_auteur
-            JOIN editeur ed ON ed.id = li.id_editeur
-            WHERE (NULLIF(:titre, '') IS NULL OR LOWER(li.titre) COLLATE utf8mb4_unicode_ci LIKE LOWER(:titre) COLLATE utf8mb4_unicode_ci)
-              AND (NULLIF(:auteur, '') IS NULL OR LOWER(au.nom) COLLATE utf8mb4_unicode_ci LIKE LOWER(:auteur) COLLATE utf8mb4_unicode_ci)
-              AND (NULLIF(:editeur, '') IS NULL OR LOWER(ed.nom) COLLATE utf8mb4_unicode_ci LIKE LOWER(:editeur) COLLATE utf8mb4_unicode_ci)
-              AND (NULLIF(:disponibilite, '') IS NULL OR li.dispo = :disponibilite)
-            ORDER BY titre
-            LIMIT 20 OFFSET :offset;
-        ";
-    $sth = $pdo->prepare($sql);
-    $sth->bindValue(':titre', "%" . $titre . "%");
-    $sth->bindValue(':auteur', "%" . $auteur . "%");
-    $sth->bindValue(':editeur', "%" . $editeur . "%");
-    $sth->bindValue(':disponibilite', $disponible);
-    $sth->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $sth->execute();
-    $livres = $sth->fetchAll(PDO::FETCH_ASSOC);
-    $pdo = null;
+    $livres = getBooks($titre, $auteur, $editeur, $disponible, $offset);
+
+
     $havingFiltres = isset($_SESSION["filtres"]);
 
     if (count($livres) < 20) {
@@ -112,23 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     unset($_SESSION["page"]);
     unset($_SESSION["filtres"]);
 
-    $sql =
-        "
-            SELECT li.titre as titre, au.nom AS auteur, ed.nom AS editeur, li.dispo AS disponibilite, (
-                SELECT MAX(em.date_emprunt)
-                FROM emprunt em
-                WHERE em.id_livre = li.id
-            ) AS dernieremprunt
-            FROM livre li
-            JOIN auteur au ON au.id = li.id_auteur
-            JOIN editeur ed ON ed.id = li.id_editeur
-            ORDER BY titre ASC
-            LIMIT 20;
-        ";
-    $sth = $pdo->prepare($sql);
-    $sth->execute();
-    $livres = $sth->fetchAll(PDO::FETCH_ASSOC);
-    $pdo = null;
+    $livres = getBooks();
     echo $twig->render('Accueil.twig', [
         'title' => 'Accueil',
         'livres' => $livres,
