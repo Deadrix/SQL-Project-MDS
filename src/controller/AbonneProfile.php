@@ -151,8 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $recommandations = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $pdo = null;
     } else {
-        $emprunts["message"] = "L'utilisateur n'a jamais emprunté de livre.";
-        $recommandations["message"] = "Impossible de créer des recommandations personnalisée.";
+        $emprunts = ["message" => "L'utilisateur n'a jamais emprunté de livre."];
+        $recommandations = ["message" => "Impossible de créer des recommandations personnalisée."];
     }
 
     if ($abonne) {

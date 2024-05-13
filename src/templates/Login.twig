@@ -89,53 +89,61 @@
         </section>
 
         <script>
-            let mainSection = $('#mainSection');
 
-            let email = $('#email');
-            let password = $('#password');
-            let formLogin = $('#formLogin');
-            let login = $('#login');
+            $(document).ready(() => {
 
-            let successModal = $('#successModal');
-            let errorModal = $('#errorModal');
-            let closeSuccessModal = $('#closeSuccessModal');
-            let closeErrorModal = $('#closeErrorModal');
+                let mainSection = $('#mainSection');
 
-            $(window).on('load', function () {
-                mainSection.slideDown(1000);
-            });
+                let email = $('#email');
+                let password = $('#password');
+                let formLogin = $('#formLogin');
+                let login = $('#login');
 
-            login.click(function () {
-                event.preventDefault();
-                $.ajax({
-                    url: '../controller/Login.php',
-                    type: 'POST',
-                    data: {
-                        email: email.val(),
-                        password: password.val(),
-                    },
-                    success: function (response) {
-                        if (response === 'true') {
-                            successModal.slideDown("slow");
+                let successModal = $('#successModal');
+                let errorModal = $('#errorModal');
+                let closeSuccessModal = $('#closeSuccessModal');
+                let closeErrorModal = $('#closeErrorModal');
+
+                $(window).on('load', function () {
+                    mainSection.slideDown(1000);
+                });
+
+                login.click(() => {
+                    event.preventDefault();
+                    $.ajax({
+                        url: '../controller/Login.php',
+                        type: 'POST',
+                        data: {
+                            email: email.val(),
+                            password: password.val(),
+                        },
+                        success: (response) => {
+                            if (response === 'true') {
+                                successModal.slideDown("slow");
+                                setTimeout(() => {
+                                    window.location.href = '../controller/Accueil.php';
+                                }, 1500);
+                            } else {
+                                errorModal.slideDown("slow");
+                                password.val('');
+                            }
+                        }
+                    });
+                });
+
+                $(document).click((event) => {
+                    if (!$(event.target).closest(successModal).length || !$(event.target).closest(errorModal).length) {
+                        if (successModal.is(":visible")) {
+                            if (window.location.href.indexOf("Login") > -1)
+                                window.location.href = '../controller/Accueil.php';
+                            else
+                                location.reload();
                         } else {
-                            errorModal.slideDown("slow");
-                            password.val('');
+                            errorModal.slideUp("slow");
                         }
                     }
                 });
-            });
 
-            $(document).click(function (event) {
-                if (!$(event.target).closest(successModal).length || !$(event.target).closest(errorModal).length) {
-                    if (successModal.is(":visible")) {
-                        if (window.location.href.indexOf("Login") > -1)
-                            window.location.href = '../controller/Accueil.php';
-                        else
-                            location.reload();
-                    } else {
-                        errorModal.slideUp("slow");
-                    }
-                }
             });
         </script>
 
