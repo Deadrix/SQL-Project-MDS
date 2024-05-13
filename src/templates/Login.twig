@@ -121,7 +121,10 @@
                             if (response === 'true') {
                                 successModal.slideDown("slow");
                                 setTimeout(() => {
-                                    window.location.href = '../controller/Accueil.php';
+                                    if (window.location.href.indexOf("Login") > -1)
+                                        window.location.href = '../controller/Accueil.php';
+                                    else
+                                        location.reload();
                                 }, 1500);
                             } else {
                                 errorModal.slideDown("slow");
